@@ -1,9 +1,6 @@
 package com.example.uas.service_api
 
-import com.example.uas.model.AllHewanResponse
 import com.example.uas.model.AllPetugasResponse
-import com.example.uas.model.Hewan
-import com.example.uas.model.HewanDetailResponse
 import com.example.uas.model.Petugas
 import com.example.uas.model.PetugasDetailResponse
 import retrofit2.Response

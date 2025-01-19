@@ -1,12 +1,8 @@
 package com.example.uas.repository
 
-import com.example.uas.model.AllHewanResponse
 import com.example.uas.model.AllKandangResponse
-import com.example.uas.model.Hewan
-import com.example.uas.model.HewanDetailResponse
 import com.example.uas.model.Kandang
 import com.example.uas.model.KandangDetailResponse
-import com.example.uas.service_api.HewanService
 import com.example.uas.service_api.KandangService
 import java.io.IOException
 
