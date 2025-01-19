@@ -24,5 +24,4 @@ data class Kandang (
     val idHewan: Int,
     val kapasitas: String,
     val lokasi: String,
-
 )
