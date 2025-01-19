@@ -1,10 +1,7 @@
 package com.example.uas.di
 
-import com.example.uas.repository.KandangRepository
 import com.example.uas.repository.MonitoringRepository
-import com.example.uas.repository.NetworkKandangRepository
 import com.example.uas.repository.NetworkMonitoringRepository
-import com.example.uas.service_api.KandangService
 import com.example.uas.service_api.MonitoringService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
