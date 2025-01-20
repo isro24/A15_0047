@@ -11,10 +11,10 @@ import com.example.uas.di.MonitoringContainer
 import com.example.uas.di.PetugasContainer
 
 class ZooMonitoringApplications:Application() {
-    private lateinit var containerHewan: AppContainerHewan
-    private lateinit var containerKandang: AppContainerKandang
-    private lateinit var containerPetugas: AppContainerPetugas
-    private lateinit var containerMonitoring: AppContainerMonitoring
+    lateinit var containerHewan: AppContainerHewan
+    lateinit var containerKandang: AppContainerKandang
+    lateinit var containerPetugas: AppContainerPetugas
+    lateinit var containerMonitoring: AppContainerMonitoring
 
     override fun onCreate() {
         super.onCreate()
