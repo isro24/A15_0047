@@ -3,14 +3,18 @@ package com.example.uas.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.uas.ui.view.hewan.DestinasiDetailHewan
 import com.example.uas.ui.view.hewan.DestinasiHomeHewan
 import com.example.uas.ui.view.hewan.DestinasiInsertHewan
+import com.example.uas.ui.view.hewan.DestinasiUpdateHewan
+import com.example.uas.ui.view.hewan.DetailViewHewan
 import com.example.uas.ui.view.hewan.HomeScreenHewan
-import com.example.uas.ui.view.hewan.InsertHwnScreen
+import com.example.uas.ui.view.hewan.InsertViewHewan
 
 @Composable
 fun PengelolaHalaman(navController: NavHostController = rememberNavController()){
@@ -28,11 +32,36 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
             )
         }
         composable (DestinasiInsertHewan.route){
-            InsertHwnScreen(navigateBack = {
+            InsertViewHewan(navigateBack = {
                 navController.navigate(DestinasiHomeHewan.route){
-                    popUpTo(DestinasiHomeHewan.route){inclusive = true}
+                    popUpTo(DestinasiHomeHewan.route){inclusive = true} }
                 }
-            })
+            )
+        }
+        composable(
+            DestinasiDetailHewan.routeWithArgs,
+            arguments = listOf(
+                navArgument(DestinasiDetailHewan.IDHEWAN){
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            val nim = it.arguments?.getString(DestinasiDetailHewan.IDHEWAN)
+            nim?.let {
+                DetailViewHewan(
+                    NavigateBack = {
+                        navController.navigate(DestinasiHomeHewan.route) {
+                            popUpTo(DestinasiHomeHewan.route) {
+                                inclusive = true
+                            }
+                        }
+                    },
+                    onEditClick =  {navController.navigate("${DestinasiUpdateHewan.route}/$it")},
+                    onDeleteClick = {
+                        navController.popBackStack()
+                    }
+                )
+            }
         }
     }
 }

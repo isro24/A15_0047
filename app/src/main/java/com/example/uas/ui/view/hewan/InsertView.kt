@@ -40,7 +40,7 @@ object DestinasiInsertHewan: DestinasiNavigasi {
 
 @OptIn(ExperimentalMaterial3Api:: class)
 @Composable
-fun InsertHwnScreen(
+fun InsertViewHewan(
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: InsertViewModel = viewModel(factory= PenyediaViewModel.Factory)
