@@ -6,13 +6,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.uas.ui.view.hewan.DestinasiDetail
-import com.example.uas.ui.view.hewan.DestinasiEntry
+import com.example.uas.ui.view.hewan.DestinasiDetailHewan
 import com.example.uas.ui.view.hewan.DestinasiHomeHewan
+import com.example.uas.ui.view.hewan.DestinasiInsertHewan
 import com.example.uas.ui.view.hewan.HomeScreenHewan
+import com.example.uas.ui.view.hewan.InsertHwnScreen
 
 @Composable
-fun PengelolaHalaman(modifier: Modifier = Modifier,navController: NavHostController = rememberNavController()){
+fun PengelolaHalaman(navController: NavHostController = rememberNavController()){
     NavHost(
         navController = navController,
         startDestination = DestinasiHomeHewan.route,
@@ -20,11 +21,18 @@ fun PengelolaHalaman(modifier: Modifier = Modifier,navController: NavHostControl
     ){
         composable (DestinasiHomeHewan.route){
             HomeScreenHewan(
-                navigateToItemEntry = {navController.navigate(DestinasiEntry.route)},
+                navigateToItemEntry = {navController.navigate(DestinasiInsertHewan.route)},
                 onDetailClick = { idHewan ->
-                    navController.navigate("${DestinasiDetail.route}/$idHewan")
+                    navController.navigate("${DestinasiDetailHewan.route}/$idHewan")
                 }
             )
+        }
+        composable (DestinasiInsertHewan.route){
+            InsertHwnScreen(navigateBack = {
+                navController.navigate(DestinasiHomeHewan.route){
+                    popUpTo(DestinasiHomeHewan.route){inclusive = true}
+                }
+            })
         }
     }
 }
