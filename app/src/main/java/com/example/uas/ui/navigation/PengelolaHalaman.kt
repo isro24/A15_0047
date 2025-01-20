@@ -15,6 +15,7 @@ import com.example.uas.ui.view.hewan.DestinasiUpdateHewan
 import com.example.uas.ui.view.hewan.DetailViewHewan
 import com.example.uas.ui.view.hewan.HomeScreenHewan
 import com.example.uas.ui.view.hewan.InsertViewHewan
+import com.example.uas.ui.view.hewan.UpdateViewHewan
 
 @Composable
 fun PengelolaHalaman(navController: NavHostController = rememberNavController()){
@@ -62,6 +63,23 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                     }
                 )
             }
+        }
+        composable(
+            DestinasiUpdateHewan.routeWithArgs,
+            arguments = listOf(
+                navArgument(DestinasiUpdateHewan.IDHEWAN) {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            UpdateViewHewan(
+                NavigateBack = {
+                    navController.popBackStack()
+                },
+                onNavigate = {
+                    navController.popBackStack()
+                },
+            )
         }
     }
 }
