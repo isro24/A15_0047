@@ -6,10 +6,12 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.uas.ZooMonitoringApplications
 import com.example.uas.ui.viewmodel.hewan.HomeViewModel
+import com.example.uas.ui.viewmodel.hewan.InsertViewModel
 
 object PenyediaViewModel {
     val Factory = viewModelFactory {
         initializer { HomeViewModel(aplikasiZoo().containerHewan.hewanRepository) }
+        initializer { InsertViewModel(aplikasiZoo().containerHewan.hewanRepository) }
     }
 }
 
