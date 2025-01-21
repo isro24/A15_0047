@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -66,7 +67,10 @@ fun DetailViewHewan(
                 title = DestinasiDetailHewan.titleRes,
                 canNavigateBack = true,
                 scrollBehavior = scrollBehavior,
-                navigateUp = NavigateBack
+                navigateUp = NavigateBack,
+                onRefresh = {
+                    viewModel.getHewanById()
+                }
             )
         },
         floatingActionButton = {
@@ -86,9 +90,12 @@ fun DetailViewHewan(
 
         BodyDetailHwn(
             detailUiState = viewModel.detailUiState,
-            modifier = Modifier.padding(innerPadding),
+            modifier = Modifier.padding(innerPadding)
+                .padding(horizontal = 20.dp, ),
             onDeleteClick = {
                 deleteConfirmationRequired = true
+            },
+            retryAction = { viewModel.getHewanById()
             }
         )
 
@@ -111,6 +118,7 @@ fun DetailViewHewan(
 
 @Composable
 fun BodyDetailHwn(
+    retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     detailUiState: DetailUiState,
     onDeleteClick: () -> Unit
@@ -146,10 +154,11 @@ fun BodyDetailHwn(
                     modifier = modifier
                 )
 
-                Spacer(modifier = Modifier.padding(8.dp))
                 Button(
                     onClick = onDeleteClick,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF22B14C))
                 ) {
                     Text(text = "Delete")
                 }
@@ -166,8 +175,8 @@ fun ItemDetailHwn(
     Card(
         modifier = modifier.fillMaxWidth().padding(top = 20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = Color.Black
         )
     ){
         Column(

@@ -1,11 +1,13 @@
 package com.example.uas.ui.view.hewan
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uas.ui.customwidget.CustomeTopAppBar
 import com.example.uas.ui.navigation.DestinasiNavigasi
@@ -44,7 +46,9 @@ fun UpdateViewHewan(
         }
     ){ padding ->
         EntryBody(
-            modifier = Modifier.padding(padding),
+            modifier = Modifier.padding(padding)
+                .padding(horizontal = 30.dp, vertical = 10.dp)
+                .fillMaxWidth(),
             onSiswaValueChange = viewModel::updateInsertHwnState,
             insertUiState = viewModel.updateUIState,
             onSaveClick = {
