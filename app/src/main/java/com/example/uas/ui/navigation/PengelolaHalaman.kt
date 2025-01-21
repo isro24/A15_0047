@@ -16,6 +16,9 @@ import com.example.uas.ui.view.hewan.DetailViewHewan
 import com.example.uas.ui.view.hewan.HomeScreenHewan
 import com.example.uas.ui.view.hewan.InsertViewHewan
 import com.example.uas.ui.view.hewan.UpdateViewHewan
+import com.example.uas.ui.view.petugas.DestinasiHomePetugas
+import com.example.uas.ui.view.petugas.DestinasiInsertPetugas
+import com.example.uas.ui.view.petugas.HomeViewPetugas
 
 @Composable
 fun PengelolaHalaman(navController: NavHostController = rememberNavController()){
@@ -24,6 +27,8 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
         startDestination = DestinasiHomeHewan.route,
         modifier = Modifier
     ){
+
+// Hewan
         composable (DestinasiHomeHewan.route){
             HomeScreenHewan(
                 navigateToItemEntry = {navController.navigate(DestinasiInsertHewan.route)},
@@ -79,6 +84,17 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                 onNavigate = {
                     navController.popBackStack()
                 },
+            )
+        }
+
+
+// Petugas
+        composable (DestinasiHomePetugas.route){
+            HomeViewPetugas(
+                navigateToItemEntry = {navController.navigate(DestinasiInsertPetugas.route)},
+                onDetailClick = { idPetugas ->
+                    navController.navigate("${DestinasiDetailHewan.route}/$idPetugas")
+                }
             )
         }
     }
