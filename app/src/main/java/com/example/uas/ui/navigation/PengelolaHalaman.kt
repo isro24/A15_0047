@@ -16,6 +16,8 @@ import com.example.uas.ui.view.hewan.DetailViewHewan
 import com.example.uas.ui.view.hewan.HomeScreenHewan
 import com.example.uas.ui.view.hewan.InsertViewHewan
 import com.example.uas.ui.view.hewan.UpdateViewHewan
+import com.example.uas.ui.view.mainhome.DestinasiMainHome
+import com.example.uas.ui.view.mainhome.MainHome
 import com.example.uas.ui.view.petugas.DestinasiDetailPetugas
 import com.example.uas.ui.view.petugas.DestinasiHomePetugas
 import com.example.uas.ui.view.petugas.DestinasiInsertPetugas
@@ -29,9 +31,14 @@ import com.example.uas.ui.view.petugas.UpdateViewPetugas
 fun PengelolaHalaman(navController: NavHostController = rememberNavController()){
     NavHost(
         navController = navController,
-        startDestination = DestinasiHomePetugas.route,
+        startDestination = DestinasiMainHome.route,
         modifier = Modifier
     ){
+
+// HomeView
+        composable (DestinasiMainHome.route){
+            MainHome(navController)
+        }
 
 // Hewan
         composable (DestinasiHomeHewan.route){
@@ -39,7 +46,14 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                 navigateToItemEntry = {navController.navigate(DestinasiInsertHewan.route)},
                 onDetailClick = { idHewan ->
                     navController.navigate("${DestinasiDetailHewan.route}/$idHewan")
-                }
+                },
+                NavigateBack = {
+                    navController.navigate(DestinasiMainHome.route) {
+                        popUpTo(DestinasiMainHome.route) {
+                            inclusive = true
+                        }
+                    }
+                },
             )
         }
         composable (DestinasiInsertHewan.route){
@@ -99,7 +113,14 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                 navigateToItemEntry = {navController.navigate(DestinasiInsertPetugas.route)},
                 onDetailClick = { idPetugas ->
                     navController.navigate("${DestinasiDetailPetugas.route}/$idPetugas")
-                }
+                },
+                NavigateBack = {
+                    navController.navigate(DestinasiMainHome.route) {
+                        popUpTo(DestinasiMainHome.route) {
+                            inclusive = true
+                        }
+                    }
+                },
             )
         }
         composable (DestinasiInsertPetugas.route){
