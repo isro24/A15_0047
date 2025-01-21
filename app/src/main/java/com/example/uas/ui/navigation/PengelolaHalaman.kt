@@ -19,13 +19,17 @@ import com.example.uas.ui.view.hewan.UpdateViewHewan
 import com.example.uas.ui.view.petugas.DestinasiDetailPetugas
 import com.example.uas.ui.view.petugas.DestinasiHomePetugas
 import com.example.uas.ui.view.petugas.DestinasiInsertPetugas
+import com.example.uas.ui.view.petugas.DestinasiUpdatePetugas
+import com.example.uas.ui.view.petugas.DetailViewPetugas
 import com.example.uas.ui.view.petugas.HomeViewPetugas
+import com.example.uas.ui.view.petugas.InsertViewPetugas
+import com.example.uas.ui.view.petugas.UpdateViewPetugas
 
 @Composable
 fun PengelolaHalaman(navController: NavHostController = rememberNavController()){
     NavHost(
         navController = navController,
-        startDestination = DestinasiHomeHewan.route,
+        startDestination = DestinasiHomePetugas.route,
         modifier = Modifier
     ){
 
@@ -53,8 +57,8 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                 }
             )
         ) {
-            val nim = it.arguments?.getString(DestinasiDetailHewan.IDHEWAN)
-            nim?.let {
+            val idHewan = it.arguments?.getString(DestinasiDetailHewan.IDHEWAN)
+            idHewan?.let {
                 DetailViewHewan(
                     NavigateBack = {
                         navController.navigate(DestinasiHomeHewan.route) {
@@ -96,6 +100,55 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                 onDetailClick = { idPetugas ->
                     navController.navigate("${DestinasiDetailPetugas.route}/$idPetugas")
                 }
+            )
+        }
+        composable (DestinasiInsertPetugas.route){
+            InsertViewPetugas(navigateBack = {
+                navController.navigate(DestinasiHomePetugas.route){
+                    popUpTo(DestinasiHomePetugas.route){inclusive = true} }
+            }
+            )
+        }
+        composable(
+            DestinasiDetailPetugas.routeWithArgs,
+            arguments = listOf(
+                navArgument(DestinasiDetailPetugas.IDPETUGAS){
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            val idPetugas = it.arguments?.getString(DestinasiDetailPetugas.IDPETUGAS)
+            idPetugas?.let {
+                DetailViewPetugas(
+                    NavigateBack = {
+                        navController.navigate(DestinasiHomePetugas.route) {
+                            popUpTo(DestinasiHomePetugas.route) {
+                                inclusive = true
+                            }
+                        }
+                    },
+                    onEditClick =  {navController.navigate("${DestinasiUpdatePetugas.route}/$it")},
+                    onDeleteClick = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+        }
+        composable(
+            DestinasiUpdatePetugas.routeWithArgs,
+            arguments = listOf(
+                navArgument(DestinasiUpdatePetugas.IDPETUGAS) {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            UpdateViewPetugas(
+                NavigateBack = {
+                    navController.popBackStack()
+                },
+                onNavigate = {
+                    navController.popBackStack()
+                },
             )
         }
     }
