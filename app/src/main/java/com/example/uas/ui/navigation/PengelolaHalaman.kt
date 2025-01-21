@@ -16,6 +16,7 @@ import com.example.uas.ui.view.hewan.DetailViewHewan
 import com.example.uas.ui.view.hewan.HomeScreenHewan
 import com.example.uas.ui.view.hewan.InsertViewHewan
 import com.example.uas.ui.view.hewan.UpdateViewHewan
+import com.example.uas.ui.view.petugas.DestinasiDetailPetugas
 import com.example.uas.ui.view.petugas.DestinasiHomePetugas
 import com.example.uas.ui.view.petugas.DestinasiInsertPetugas
 import com.example.uas.ui.view.petugas.HomeViewPetugas
@@ -93,7 +94,7 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
             HomeViewPetugas(
                 navigateToItemEntry = {navController.navigate(DestinasiInsertPetugas.route)},
                 onDetailClick = { idPetugas ->
-                    navController.navigate("${DestinasiDetailHewan.route}/$idPetugas")
+                    navController.navigate("${DestinasiDetailPetugas.route}/$idPetugas")
                 }
             )
         }
