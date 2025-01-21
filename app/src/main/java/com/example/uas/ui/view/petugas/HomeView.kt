@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -22,15 +21,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -60,8 +54,6 @@ fun HomeViewPetugas(
     viewModel: HomeViewModelPetugas = viewModel(factory = PenyediaViewModel.Factory)
 ){
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-
-    var search by remember { mutableStateOf("") }
 
     Scaffold (
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -93,43 +85,14 @@ fun HomeViewPetugas(
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            SearchBar(
-                query = search,
-                onQueryChanged = {
-                    search = it
-                }
-            )
             HomeStatusPetugas(
                 homeUiStatePetugas = viewModel.ptgUiState,
                 retryAction = {viewModel.getPtg()},
                 modifier = Modifier.fillMaxWidth(),
                 onDetailClick = onDetailClick,
-                search = search
             )
         }
     }
-}
-@Composable
-fun SearchBar(
-    query: String,
-    onQueryChanged: (String) -> Unit,
-) {
-    OutlinedTextField(
-        value = query,
-        onValueChange = onQueryChanged,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        placeholder = { Text("Cari Petugas...") },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = "Ikon Cari"
-            )
-        },
-        shape = MaterialTheme.shapes.large,
-        singleLine = true
-    )
 }
 
 @Composable
@@ -138,37 +101,24 @@ fun HomeStatusPetugas(
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     onDetailClick: (String) -> Unit,
-    search: String
 ){
     when (homeUiStatePetugas) {
         is HomeUiStatePetugas.Loading -> OnLoading(modifier = modifier.fillMaxSize())
 
-        is HomeUiStatePetugas.Success ->{
-            val filteredPetugas = homeUiStatePetugas.petugas.filter {
-                it.namaPetugas.contains(search, ignoreCase = true)
-            }
-            if (homeUiStatePetugas.petugas.isEmpty() || filteredPetugas.isEmpty()){
-                Box(
-                    modifier = modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = if (homeUiStatePetugas.petugas.isEmpty())
-                            "Tidak ada data Petugas"
-                        else
-                            "Petugas tidak ditemukan"
-                    )
+        is HomeUiStatePetugas.Success ->
+            if (homeUiStatePetugas.petugas.isEmpty()){
+                return Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+                    Text(text = "Tidak ada data Petugas")
                 }
             }else {
                 PtgLayout(
-                    petugas = filteredPetugas,
+                    petugas = homeUiStatePetugas.petugas,
                     modifier=modifier.fillMaxWidth(),
                     onDetailClick = {
                         onDetailClick(it.idPetugas.toString())
                     }
                 )
             }
-        }
         is HomeUiStatePetugas.Error -> OnError(retryAction, modifier = modifier.fillMaxSize())
     }
 }
