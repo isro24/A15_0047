@@ -9,7 +9,7 @@ import com.example.uas.model.Petugas
 import com.example.uas.repository.PetugasRepository
 import kotlinx.coroutines.launch
 
-class InsertViewModel(private val ptg: PetugasRepository): ViewModel(){
+class InsertViewModelPetugas(private val ptg: PetugasRepository): ViewModel(){
     var uiState by mutableStateOf(InsertUiStatePetugas())
         private set
 
@@ -17,7 +17,7 @@ class InsertViewModel(private val ptg: PetugasRepository): ViewModel(){
         uiState = InsertUiStatePetugas(insertUiEventPetugas=insertUiEventPetugas)
     }
 
-    suspend fun insertMhs(){
+    suspend fun insertPtg(){
         viewModelScope.launch {
             try {
                 ptg.insertPetugas(uiState.insertUiEventPetugas.toPtg())
