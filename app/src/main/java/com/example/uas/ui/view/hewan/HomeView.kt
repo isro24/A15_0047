@@ -17,13 +17,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,6 +32,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -68,6 +67,7 @@ object DestinasiHomeHewan : DestinasiNavigasi{
 fun HomeScreenHewan(
     navigateToItemEntry: () -> Unit,
     modifier: Modifier = Modifier,
+    NavigateBack: () -> Unit,
     onDetailClick: (String) -> Unit,
     viewModel: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ){
@@ -82,6 +82,7 @@ fun HomeScreenHewan(
                 title = DestinasiHomeHewan.titleRes,
                 canNavigateBack = true,
                 scrollBehavior = scrollBehavior,
+                navigateUp = NavigateBack,
                 onRefresh = {
                     viewModel.getHwn()
                 },
@@ -95,7 +96,7 @@ fun HomeScreenHewan(
             ){
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Tambah Petugas"
+                    contentDescription = "Tambah Hewan"
                 )
             }
         }
@@ -139,7 +140,7 @@ fun HeaderSection() {
             .background(color = Color(0xFF28D15A))
     ) {
         Image(
-            painter = painterResource(id = R.drawable.bg4),
+            painter = painterResource(id = R.drawable.bg1),
             contentDescription = "Header Background",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -173,6 +174,7 @@ fun HeaderSection() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(
     query: String,
@@ -185,7 +187,7 @@ fun SearchBar(
             .fillMaxWidth()
             .padding(16.dp)
             .offset(y = (-50).dp)
-            .background(color = Color.White),
+        ,
         placeholder = { Text("Cari hewan...") },
         leadingIcon = {
             Icon(
@@ -194,7 +196,10 @@ fun SearchBar(
             )
         },
         shape = MaterialTheme.shapes.large,
-        singleLine = true
+        singleLine = true,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            containerColor = Color.White
+        )
     )
 }
 

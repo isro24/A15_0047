@@ -21,10 +21,10 @@ class DetailViewModelPetugas(
         private set
 
     init {
-        getHewanById()
+        getPetugasById()
     }
 
-    fun getHewanById() {
+    fun getPetugasById() {
         viewModelScope.launch {
             detailUiStatePetugas = DetailUiStatePetugas(isLoading = true)
             try {

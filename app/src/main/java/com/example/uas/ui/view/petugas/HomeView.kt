@@ -62,6 +62,7 @@ fun HomeViewPetugas(
     navigateToItemEntry: () -> Unit,
     modifier: Modifier = Modifier,
     onDetailClick: (String) -> Unit,
+    NavigateBack: () -> Unit,
     viewModel: HomeViewModelPetugas = viewModel(factory = PenyediaViewModel.Factory)
 ){
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -73,6 +74,7 @@ fun HomeViewPetugas(
                 title = DestinasiHomePetugas.titleRes,
                 canNavigateBack = true,
                 scrollBehavior = scrollBehavior,
+                navigateUp = NavigateBack,
                 onRefresh = {
                     viewModel.getPtg()
                 }
