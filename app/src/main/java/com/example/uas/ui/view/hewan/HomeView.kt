@@ -303,10 +303,10 @@ fun HwnCard(
     modifier: Modifier = Modifier,
 ){
 
-    val textColor = when(hewan.tipePakan.lowercase()){
-        "karnivora" -> Color.Red
-        "herbivora" -> Color.Green
-        "omnivora" -> Color.Blue
+    val textColor = when(hewan.tipePakan){
+        "Karnivora" -> Color.Red
+        "Herbivora" -> Color.Green
+        "Omnivora" -> Color.Blue
         else -> Color.Black
 
     }
