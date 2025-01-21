@@ -10,14 +10,14 @@ import com.example.uas.repository.PetugasRepository
 import kotlinx.coroutines.launch
 import java.io.IOException
 
-sealed class HomeUiState {
-    data class Success(val petugas : List<Petugas>) : HomeUiState()
-    object Error : HomeUiState()
-    object Loading : HomeUiState()
+sealed class HomeUiStatePetugas {
+    data class Success(val petugas : List<Petugas>) : HomeUiStatePetugas()
+    object Error : HomeUiStatePetugas()
+    object Loading : HomeUiStatePetugas()
 }
 
-class HomeViewModel(private val ptg: PetugasRepository) : ViewModel(){
-    var ptgUiState: HomeUiState by mutableStateOf(HomeUiState.Loading)
+class HomeViewModelPetugas(private val ptg: PetugasRepository) : ViewModel(){
+    var ptgUiState: HomeUiStatePetugas by mutableStateOf(HomeUiStatePetugas.Loading)
         private set
 
     init {
@@ -26,13 +26,13 @@ class HomeViewModel(private val ptg: PetugasRepository) : ViewModel(){
 
     fun getPtg(){
         viewModelScope.launch {
-            ptgUiState = HomeUiState.Loading
+            ptgUiState = HomeUiStatePetugas.Loading
             ptgUiState = try {
-                HomeUiState.Success(ptg.getPetugas().data)
+                HomeUiStatePetugas.Success(ptg.getPetugas().data)
             } catch (e: IOException) {
-                HomeUiState.Error
+                HomeUiStatePetugas.Error
             } catch (e: IOException) {
-                HomeUiState.Error
+                HomeUiStatePetugas.Error
             }
         }
     }
