@@ -10,7 +10,10 @@ import com.example.uas.ui.viewmodel.hewan.DetailViewModel
 import com.example.uas.ui.viewmodel.hewan.HomeViewModel
 import com.example.uas.ui.viewmodel.hewan.InsertViewModel
 import com.example.uas.ui.viewmodel.hewan.UpdateViewModel
+import com.example.uas.ui.viewmodel.petugas.DetailViewModelPetugas
 import com.example.uas.ui.viewmodel.petugas.HomeViewModelPetugas
+import com.example.uas.ui.viewmodel.petugas.InsertViewModelPetugas
+import com.example.uas.ui.viewmodel.petugas.UpdateViewModelPetugas
 
 object PenyediaViewModel {
     val Factory = viewModelFactory {
@@ -20,6 +23,9 @@ object PenyediaViewModel {
         initializer { UpdateViewModel(createSavedStateHandle(),aplikasiZoo().containerHewan.hewanRepository) }
 
         initializer { HomeViewModelPetugas(aplikasiZoo().containerPetugas.petugasRepository) }
+        initializer { InsertViewModelPetugas(aplikasiZoo().containerPetugas.petugasRepository) }
+        initializer { DetailViewModelPetugas(createSavedStateHandle(),aplikasiZoo().containerPetugas.petugasRepository) }
+        initializer { UpdateViewModelPetugas(createSavedStateHandle(),aplikasiZoo().containerPetugas.petugasRepository) }
     }
 }
 
