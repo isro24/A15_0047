@@ -21,10 +21,10 @@ class DetailViewModel(
         private set
 
     init {
-        getHewanByNim()
+        getHewanById()
     }
 
-    private fun getHewanByNim() {
+    fun getHewanById() {
         viewModelScope.launch {
             detailUiState = DetailUiState(isLoading = true)
             try {

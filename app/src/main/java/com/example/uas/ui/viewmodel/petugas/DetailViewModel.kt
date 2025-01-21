@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.uas.model.Petugas
 import com.example.uas.repository.PetugasRepository
 import com.example.uas.ui.view.petugas.DestinasiDetailPetugas
-import com.example.uas.ui.viewmodel.petugas.InsertUiEventPetugas
 import kotlinx.coroutines.launch
 
 class DetailViewModelPetugas(
@@ -18,7 +17,7 @@ class DetailViewModelPetugas(
 ) : ViewModel() {
     private val idPetugas: String = checkNotNull(savedStateHandle[DestinasiDetailPetugas.IDPETUGAS])
 
-    var detailUiState: DetailUiState by mutableStateOf(DetailUiState())
+    var detailUiStatePetugas: DetailUiStatePetugas by mutableStateOf(DetailUiStatePetugas())
         private set
 
     init {
@@ -27,15 +26,15 @@ class DetailViewModelPetugas(
 
     fun getHewanById() {
         viewModelScope.launch {
-            detailUiState = DetailUiState(isLoading = true)
+            detailUiStatePetugas = DetailUiStatePetugas(isLoading = true)
             try {
                 val result = petugasRepository.getPetugasById(idPetugas).data
-                detailUiState = DetailUiState(
-                    detailUiEvent = result.toDetailUiEvent(),
+                detailUiStatePetugas = DetailUiStatePetugas(
+                    detailUiEventPetugas = result.toDetailUiEventPetugas(),
                     isLoading = false
                 )
             } catch (e: Exception) {
-                detailUiState = DetailUiState(
+                detailUiStatePetugas = DetailUiStatePetugas(
                     isLoading = false,
                     isError = true,
                     errorMessage = e.message ?: "Unknown"
@@ -46,13 +45,13 @@ class DetailViewModelPetugas(
 
     fun deletePtg() {
         viewModelScope.launch {
-            detailUiState = DetailUiState(isLoading = true)
+            detailUiStatePetugas = DetailUiStatePetugas(isLoading = true)
             try {
                 petugasRepository.deletePetugas(idPetugas)
 
-                detailUiState = DetailUiState(isLoading = false)
+                detailUiStatePetugas = DetailUiStatePetugas(isLoading = false)
             } catch (e: Exception) {
-                detailUiState = DetailUiState(
+                detailUiStatePetugas = DetailUiStatePetugas(
                     isLoading = false,
                     isError = true,
                     errorMessage = e.message ?: "Unknown Error"
@@ -63,20 +62,20 @@ class DetailViewModelPetugas(
 }
 
 
-data class DetailUiState(
-    val detailUiEvent: InsertUiEventPetugas = InsertUiEventPetugas(),
+data class DetailUiStatePetugas(
+    val detailUiEventPetugas: InsertUiEventPetugas = InsertUiEventPetugas(),
     val isLoading: Boolean = false,
     val isError: Boolean = false,
     val errorMessage: String = ""
 ){
     val isUiEventEmpty: Boolean
-        get() = detailUiEvent == InsertUiEventPetugas()
+        get() = detailUiEventPetugas == InsertUiEventPetugas()
 
     val isUiEventNotEmpty: Boolean
-        get() = detailUiEvent != InsertUiEventPetugas()
+        get() = detailUiEventPetugas != InsertUiEventPetugas()
 }
 
-fun Petugas.toDetailUiEvent(): InsertUiEventPetugas{
+fun Petugas.toDetailUiEventPetugas(): InsertUiEventPetugas{
     return InsertUiEventPetugas(
         namaPetugas = namaPetugas,
         jabatan = jabatan
