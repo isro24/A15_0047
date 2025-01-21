@@ -302,9 +302,17 @@ fun HwnCard(
     hewan: Hewan,
     modifier: Modifier = Modifier,
 ){
+
+    val textColor = when(hewan.tipePakan.lowercase()){
+        "karnivora" -> Color.Red
+        "herbivora" -> Color.Green
+        "omnivora" -> Color.Blue
+        else -> Color.Black
+
+    }
+
     Card (
-        modifier = modifier
-        ,
+        modifier = modifier,
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ){
@@ -318,7 +326,8 @@ fun HwnCard(
             )
             Text(
                 text = hewan.tipePakan,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                color = textColor
             )
         }
     }
