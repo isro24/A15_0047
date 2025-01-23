@@ -1,4 +1,4 @@
-package com.example.uas.ui.view.hewan
+package com.example.uas.ui.view.kandang
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -43,33 +43,33 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uas.R
-import com.example.uas.model.Hewan
+import com.example.uas.model.Kandang
 import com.example.uas.ui.customwidget.CustomeTopAppBar
 import com.example.uas.ui.navigation.DestinasiNavigasi
 import com.example.uas.ui.viewmodel.PenyediaViewModel
-import com.example.uas.ui.viewmodel.hewan.HomeUiState
-import com.example.uas.ui.viewmodel.hewan.HomeViewModel
+import com.example.uas.ui.viewmodel.kandang.HomeUiStateKandang
+import com.example.uas.ui.viewmodel.kandang.HomeViewModelKandang
 
-object DestinasiHomeHewan : DestinasiNavigasi{
-    override val route = "homehewan"
-    override val titleRes = "Home Hewan"
+object DestinasiHomeKandang : DestinasiNavigasi {
+    override val route = "homekandang"
+    override val titleRes = "Home Kandang"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenHewan(
+fun HomeViewKandang(
     navigateToItemEntry: () -> Unit,
     modifier: Modifier = Modifier,
     NavigateBack: () -> Unit,
     onDetailClick: (String) -> Unit,
-    viewModel: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory)
+    viewModel: HomeViewModelKandang = viewModel(factory = PenyediaViewModel.Factory)
 ){
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
@@ -79,12 +79,12 @@ fun HomeScreenHewan(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             CustomeTopAppBar(
-                title = DestinasiHomeHewan.titleRes,
+                title = DestinasiHomeKandang.titleRes,
                 canNavigateBack = true,
                 scrollBehavior = scrollBehavior,
                 navigateUp = NavigateBack,
                 onRefresh = {
-                    viewModel.getHwn()
+                    viewModel.getKnd()
                 },
             )
         },
@@ -96,7 +96,7 @@ fun HomeScreenHewan(
             ){
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "Tambah Hewan"
+                    contentDescription = "Tambah Kandang"
                 )
             }
         }
@@ -115,9 +115,9 @@ fun HomeScreenHewan(
                     search = it
                 },
             )
-            HomeStatusHewan(
-                homeUiState = viewModel.hwnUiState,
-                retryAction = {viewModel.getHwn()},
+            HomeStatusKandang(
+                homeUiStateKandang = viewModel.kndUiState,
+                retryAction = {viewModel.getKnd()},
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 5.dp)
@@ -140,7 +140,7 @@ fun HeaderSection() {
             .background(color = Color(0xFF28D15A))
     ) {
         Image(
-            painter = painterResource(id = R.drawable.bg1),
+            painter = painterResource(id = R.drawable.bg2),
             contentDescription = "Header Background",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -188,7 +188,7 @@ fun SearchBar(
             .padding(16.dp)
             .offset(y = (-50).dp)
         ,
-        placeholder = { Text("Cari hewan...") },
+        placeholder = { Text("Cari kandang...") },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Search,
@@ -204,43 +204,43 @@ fun SearchBar(
 }
 
 @Composable
-fun HomeStatusHewan(
-    homeUiState: HomeUiState,
+fun HomeStatusKandang(
+    homeUiStateKandang: HomeUiStateKandang,
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     onDetailClick: (String) -> Unit,
     search: String
 ){
-    when (homeUiState) {
-        is HomeUiState.Loading -> OnLoading(modifier = modifier.fillMaxSize())
+    when (homeUiStateKandang) {
+        is HomeUiStateKandang.Loading -> OnLoading(modifier = modifier.fillMaxSize())
 
-        is HomeUiState.Success ->{
-            val filteredHewan = homeUiState.hewan.filter {
-                it.namaHewan.contains(search, ignoreCase = true)
+        is HomeUiStateKandang.Success ->{
+            val filteredKandang = homeUiStateKandang.kandang.filter {
+                it.lokasi.contains(search, ignoreCase = true)
             }
-            if (homeUiState.hewan.isEmpty() || filteredHewan.isEmpty()){
+            if (homeUiStateKandang.kandang.isEmpty() || filteredKandang.isEmpty()){
                 Box(
                     modifier = modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = if (homeUiState.hewan.isEmpty())
-                            "Tidak ada data Hewan"
+                        text = if (homeUiStateKandang.kandang.isEmpty())
+                            "Tidak ada data Kandang"
                         else
-                            "Hewan tidak ditemukan"
+                            "Kandang tidak ditemukan"
                     )
                 }
             }else {
-                HwnLayout(
-                    hewan = filteredHewan,
+                KndLayout(
+                    kandang = filteredKandang,
                     modifier=modifier.fillMaxWidth(),
                     onDetailClick = {
-                        onDetailClick(it.idHewan.toString())
+                        onDetailClick(it.idKandang.toString())
                     }
                 )
             }
         }
-        is HomeUiState.Error -> OnError(retryAction, modifier = modifier.fillMaxSize())
+        is HomeUiStateKandang.Error -> OnError(retryAction, modifier = modifier.fillMaxSize())
     }
 }
 
@@ -277,40 +277,32 @@ fun OnError(retryAction: () -> Unit, modifier: Modifier){
 }
 
 @Composable
-fun HwnLayout(
-    hewan: List<Hewan>,
-    modifier: Modifier= Modifier,
-    onDetailClick: (Hewan) -> Unit,
+fun KndLayout(
+    kandang: List<Kandang>,
+    modifier: Modifier = Modifier,
+    onDetailClick: (Kandang) -> Unit,
 ){
     LazyColumn (
         modifier = modifier,
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ){
-        items(hewan) { hewan ->
-            HwnCard(
-                hewan = hewan,
+        items(kandang) { kandang ->
+            KndCard(
+                kandang = kandang,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onDetailClick(hewan) },
+                    .clickable { onDetailClick(kandang) },
             )
         }
     }
 }
 
 @Composable
-fun HwnCard(
-    hewan: Hewan,
+fun KndCard(
+    kandang: Kandang,
     modifier: Modifier = Modifier,
 ){
-
-    val textColor = when(hewan.tipePakan){
-        "Karnivora" -> Color.Red
-        "Herbivora" -> Color.Green
-        "Omnivora" -> Color.Blue
-        else -> Color.Black
-
-    }
 
     Card (
         modifier = modifier,
@@ -322,13 +314,8 @@ fun HwnCard(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ){
             Text(
-                text = hewan.namaHewan,
+                text = kandang.idKandang,
                 style = MaterialTheme.typography.titleMedium
-            )
-            Text(
-                text = hewan.tipePakan,
-                style = MaterialTheme.typography.titleMedium,
-                color = textColor
             )
         }
     }

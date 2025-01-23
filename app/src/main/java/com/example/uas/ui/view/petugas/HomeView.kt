@@ -189,9 +189,9 @@ fun OnLoading(modifier: Modifier = Modifier){
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator(
-            modifier = Modifier.size(100.dp),
+            modifier = Modifier.size(50.dp),
             color = MaterialTheme.colorScheme.primary,
-            strokeWidth = 8.dp
+            strokeWidth = 4.dp
         )
     }
 }
@@ -203,7 +203,8 @@ fun OnError(retryAction: () -> Unit, modifier: Modifier){
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        Image(painter = painterResource(id = R.drawable.connection_error), contentDescription = ""
+        Image(painter = painterResource(id = R.drawable.connection_error), contentDescription = "",
+            modifier = Modifier.size(110.dp)
         )
         Text(text = stringResource(id = R.string.loading_failed),
             modifier = Modifier.padding(16.dp))
@@ -228,8 +229,8 @@ fun PtgLayout(
             PtgCard(
                 petugas = petugas,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onDetailClick(petugas) },
+                    .fillMaxWidth(),
+                onDetailClick = onDetailClick
             )
         }
     }
@@ -239,6 +240,7 @@ fun PtgLayout(
 fun PtgCard(
     petugas: Petugas,
     modifier: Modifier = Modifier,
+    onDetailClick: (Petugas) -> Unit,
 ){
     Card (
         modifier = modifier,
@@ -258,12 +260,13 @@ fun PtgCard(
             )
 
             IconButton(
-                onClick = { },
-                modifier = Modifier.size(24.dp)
+                onClick = { onDetailClick(petugas) },
+                modifier = Modifier.size(35.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Info,
-                    contentDescription = "Detail Petugas"
+                    contentDescription = "Detail Petugas",
+                    modifier = Modifier.size(35.dp)
                 )
             }
         }
