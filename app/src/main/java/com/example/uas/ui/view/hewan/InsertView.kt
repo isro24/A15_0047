@@ -69,7 +69,7 @@ fun InsertViewHewan(
                 onSiswaValueChange = viewModel::updateInsertHwnState,
                 onSaveClick = {
                     coroutineScope.launch {
-                        viewModel.insertMhs()
+                        viewModel.insertHwn()
                         navigateBack()
                     }
                 },

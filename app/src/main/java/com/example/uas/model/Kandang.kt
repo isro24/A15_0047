@@ -19,7 +19,7 @@ data class KandangDetailResponse(
 @Serializable
 data class Kandang (
     @SerialName("id_kandang")
-    val idKandang: Int,
+    val idKandang: String,
     @SerialName("id_hewan")
     val idHewan: Int,
     val kapasitas: String,

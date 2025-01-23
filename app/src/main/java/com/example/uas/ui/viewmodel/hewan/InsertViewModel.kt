@@ -17,7 +17,7 @@ class InsertViewModel(private val hwn: HewanRepository): ViewModel(){
         uiState = InsertUiState(insertUiEvent=insertUiEvent)
     }
 
-    suspend fun insertMhs(){
+    suspend fun insertHwn(){
         viewModelScope.launch {
             try {
                 hwn.insertHewan(uiState.insertUiEvent.toHwn())
