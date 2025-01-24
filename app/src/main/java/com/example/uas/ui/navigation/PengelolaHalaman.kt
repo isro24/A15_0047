@@ -16,6 +16,14 @@ import com.example.uas.ui.view.hewan.DetailViewHewan
 import com.example.uas.ui.view.hewan.HomeScreenHewan
 import com.example.uas.ui.view.hewan.InsertViewHewan
 import com.example.uas.ui.view.hewan.UpdateViewHewan
+import com.example.uas.ui.view.kandang.DestinasiDetailKandang
+import com.example.uas.ui.view.kandang.DestinasiHomeKandang
+import com.example.uas.ui.view.kandang.DestinasiInsertKandang
+import com.example.uas.ui.view.kandang.DestinasiUpdateKandang
+import com.example.uas.ui.view.kandang.DetailViewKandang
+import com.example.uas.ui.view.kandang.HomeViewKandang
+import com.example.uas.ui.view.kandang.InsertViewKandang
+import com.example.uas.ui.view.kandang.UpdateViewKandang
 import com.example.uas.ui.view.mainhome.DestinasiMainHome
 import com.example.uas.ui.view.mainhome.MainHome
 import com.example.uas.ui.view.petugas.DestinasiDetailPetugas
@@ -35,7 +43,7 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
         modifier = Modifier
     ){
 
-// HomeView
+// MainHome
         composable (DestinasiMainHome.route){
             MainHome(navController)
         }
@@ -164,6 +172,73 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
             )
         ) {
             UpdateViewPetugas(
+                NavigateBack = {
+                    navController.popBackStack()
+                },
+                onNavigate = {
+                    navController.popBackStack()
+                },
+            )
+        }
+
+
+// Kandang
+        composable (DestinasiHomeKandang.route){
+            HomeViewKandang(
+                navigateToItemEntry = {navController.navigate(DestinasiInsertKandang.route)},
+                onDetailClick = { idKandang ->
+                    navController.navigate("${DestinasiDetailKandang.route}/$idKandang")
+                },
+                NavigateBack = {
+                    navController.navigate(DestinasiMainHome.route) {
+                        popUpTo(DestinasiMainHome.route) {
+                            inclusive = true
+                        }
+                    }
+                },
+            )
+        }
+        composable (DestinasiInsertKandang.route){
+            InsertViewKandang(navigateBack = {
+                navController.navigate(DestinasiHomeKandang.route){
+                    popUpTo(DestinasiHomeKandang.route){inclusive = true} }
+            }
+            )
+        }
+        composable(
+            DestinasiDetailKandang.routeWithArgs,
+            arguments = listOf(
+                navArgument(DestinasiDetailKandang.IDKANDANG){
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            val idKandang = it.arguments?.getString(DestinasiDetailKandang.IDKANDANG)
+            idKandang?.let {
+                DetailViewKandang(
+                    NavigateBack = {
+                        navController.navigate(DestinasiHomeKandang.route) {
+                            popUpTo(DestinasiHomeKandang.route) {
+                                inclusive = true
+                            }
+                        }
+                    },
+                    onEditClick =  {navController.navigate("${DestinasiUpdateKandang.route}/$it")},
+                    onDeleteClick = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+        }
+        composable(
+            DestinasiUpdateKandang.routeWithArgs,
+            arguments = listOf(
+                navArgument(DestinasiUpdateKandang.IDKANDANG) {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            UpdateViewKandang(
                 NavigateBack = {
                     navController.popBackStack()
                 },
