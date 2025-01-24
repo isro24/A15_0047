@@ -64,7 +64,7 @@ fun InsertViewKandang(
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            EntryBody(
+            EntryBodyKandang(
                 insertUiStateKandang = viewModel.uiState,
                 onKandangValueChange = viewModel::updateInsertKndState,
                 onSaveClick = {
@@ -82,7 +82,7 @@ fun InsertViewKandang(
 }
 
 @Composable
-fun EntryBody(
+fun EntryBodyKandang(
     insertUiStateKandang: InsertUiStateKandang,
     onKandangValueChange: (InsertUiEventKandang) -> Unit,
     onSaveClick: () -> Unit,
