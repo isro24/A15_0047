@@ -23,12 +23,12 @@ data class Monitoring (
     @SerialName("id_petugas")
     val idPetugas: Int,
     @SerialName("id_kandang")
-    val idKandang: Int,
+    val idKandang: String,
     @SerialName("tanggal_monitoring")
     val tanggalMonitoring: String,
     @SerialName("hewan_sakit")
-    val hewanSakit: String,
+    val hewanSakit: Int,
     @SerialName("hewan_sehat")
-    val hewanSehat: String,
+    val hewanSehat: Int,
     val status: String,
 )
