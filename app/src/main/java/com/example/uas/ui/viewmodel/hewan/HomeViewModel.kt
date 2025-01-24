@@ -36,16 +36,4 @@ class HomeViewModel(private val hwn: HewanRepository) : ViewModel(){
             }
         }
     }
-
-    fun deleteHwn(idHewan: String) {
-        viewModelScope.launch {
-            try {
-                hwn.deleteHewan(idHewan)
-            } catch (e: IOException){
-                HomeUiState.Error
-            } catch (e: IOException){
-                HomeUiState.Error
-            }
-        }
-    }
 }

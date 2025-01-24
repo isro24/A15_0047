@@ -66,7 +66,7 @@ fun InsertViewHewan(
         ) {
             EntryBody(
                 insertUiState = viewModel.uiState,
-                onSiswaValueChange = viewModel::updateInsertHwnState,
+                onHewanValueChange = viewModel::updateInsertHwnState,
                 onSaveClick = {
                     coroutineScope.launch {
                         viewModel.insertHwn()
@@ -84,7 +84,7 @@ fun InsertViewHewan(
 @Composable
 fun EntryBody(
     insertUiState: InsertUiState,
-    onSiswaValueChange: (InsertUiEvent) -> Unit,
+    onHewanValueChange: (InsertUiEvent) -> Unit,
     onSaveClick: () -> Unit,
     modifier: Modifier = Modifier
 ){
@@ -94,7 +94,7 @@ fun EntryBody(
     ){
         FormInput(
             insertUiEvent = insertUiState.insertUiEvent,
-            onValueChange = onSiswaValueChange,
+            onValueChange = onHewanValueChange,
             modifier = Modifier.fillMaxWidth()
         )
         Button(

@@ -49,7 +49,7 @@ fun UpdateViewHewan(
             modifier = Modifier.padding(padding)
                 .padding(horizontal = 30.dp, vertical = 10.dp)
                 .fillMaxWidth(),
-            onSiswaValueChange = viewModel::updateInsertHwnState,
+            onHewanValueChange = viewModel::updateInsertHwnState,
             insertUiState = viewModel.updateUIState,
             onSaveClick = {
                 coroutineScope.launch {

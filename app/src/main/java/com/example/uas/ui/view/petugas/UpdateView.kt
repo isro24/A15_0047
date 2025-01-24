@@ -49,7 +49,7 @@ fun UpdateViewPetugas(
             modifier = Modifier.padding(padding)
                 .padding(horizontal = 30.dp, vertical = 10.dp)
                 .fillMaxWidth(),
-            onSiswaValueChange = viewModel::updateInsertPtgState,
+            onPetugasValueChange = viewModel::updateInsertPtgState,
             insertUiStatePetugas = viewModel.updateUIStatePetugas,
             onSaveClick = {
                 coroutineScope.launch {

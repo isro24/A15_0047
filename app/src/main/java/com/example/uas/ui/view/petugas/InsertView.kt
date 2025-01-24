@@ -76,7 +76,7 @@ fun InsertViewPetugas(
         ) {
             EntryBodyPetugas(
                 insertUiStatePetugas = viewModel.uiState,
-                onSiswaValueChange = viewModel::updateInsertPtgState,
+                onPetugasValueChange = viewModel::updateInsertPtgState,
                 onSaveClick = {
                     coroutineScope.launch {
                         viewModel.insertPtg()
@@ -94,7 +94,7 @@ fun InsertViewPetugas(
 @Composable
 fun EntryBodyPetugas(
     insertUiStatePetugas: InsertUiStatePetugas,
-    onSiswaValueChange: (InsertUiEventPetugas) -> Unit,
+    onPetugasValueChange: (InsertUiEventPetugas) -> Unit,
     onSaveClick: () -> Unit,
     modifier: Modifier = Modifier
 ){
@@ -104,7 +104,7 @@ fun EntryBodyPetugas(
     ){
         FormInput(
             insertUiEventPetugas = insertUiStatePetugas.insertUiEventPetugas,
-            onValueChange = onSiswaValueChange,
+            onValueChange = onPetugasValueChange,
             modifier = Modifier.fillMaxWidth()
         )
         Button(
