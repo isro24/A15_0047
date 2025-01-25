@@ -44,13 +44,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uas.R
 import com.example.uas.model.Monitoring
-import com.example.uas.model.Petugas
 import com.example.uas.ui.customwidget.CustomeTopAppBar
 import com.example.uas.ui.navigation.DestinasiNavigasi
-import com.example.uas.ui.view.petugas.DestinasiHomePetugas
 import com.example.uas.ui.viewmodel.PenyediaViewModel
 import com.example.uas.ui.viewmodel.monitoring.HomeUiStateMonitoring
 import com.example.uas.ui.viewmodel.monitoring.HomeViewModelMonitoring
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 object DestinasiHomeMonitoring : DestinasiNavigasi {
     override val route = "homemonitoring"
@@ -248,6 +249,9 @@ fun MntCard(
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ){
+
+        val simpleDateTimeFormat = formatDateTime(monitoring.tanggalMonitoring)
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -256,7 +260,7 @@ fun MntCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = monitoring.tanggalMonitoring,
+                text = simpleDateTimeFormat,
                 style = MaterialTheme.typography.titleMedium
             )
 
@@ -271,5 +275,18 @@ fun MntCard(
                 )
             }
         }
+    }
+}
+
+fun formatDateTime(input: String): String {
+    return try {
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        inputFormat.timeZone = java.util.TimeZone.getTimeZone("UTC")
+
+        val outputFormat = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("id"))
+        val date: Date = inputFormat.parse(input)!!
+        outputFormat.format(date)
+    } catch (e: Exception) {
+        input
     }
 }
