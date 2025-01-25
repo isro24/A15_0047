@@ -22,6 +22,6 @@ data class Kandang (
     val idKandang: String,
     @SerialName("id_hewan")
     val idHewan: Int,
-    val kapasitas: String,
+    val kapasitas: Int,
     val lokasi: String,
 )

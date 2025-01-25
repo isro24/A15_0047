@@ -36,7 +36,7 @@ data class InsertUiEvent(
     val idHewan:Int=0,
     val namaHewan:String="",
     val tipePakan:String="",
-    val populasi:String="",
+    val populasi:Int?=null,
     val zonaWilayah:String="",
 )
 
@@ -44,7 +44,7 @@ fun InsertUiEvent.toHwn(): Hewan = Hewan(
     idHewan = idHewan,
     namaHewan=namaHewan,
     tipePakan=tipePakan,
-    populasi=populasi,
+    populasi=populasi?:0,
     zonaWilayah=zonaWilayah,
 )
 

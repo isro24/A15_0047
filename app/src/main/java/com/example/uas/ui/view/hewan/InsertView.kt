@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uas.ui.customwidget.CustomeTopAppBar
@@ -145,12 +147,15 @@ fun FormInput(
             }
         )
         OutlinedTextField(
-            value = insertUiEvent.populasi,
-            onValueChange = {onValueChange(insertUiEvent.copy(populasi = it))},
+            value = insertUiEvent.populasi?.toString()?: "",
+            onValueChange = {
+                val intValue = it.toIntOrNull()
+                onValueChange(insertUiEvent.copy(populasi = intValue))},
             label = { Text(text = "Populasi") },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
-            singleLine = true
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
         OutlinedTextField(
             value = insertUiEvent.zonaWilayah,

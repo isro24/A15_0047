@@ -188,7 +188,7 @@ fun ItemDetailKnd(
             Spacer(modifier = Modifier.padding(4.dp))
             ComponentDetailHwn(judul = "Nama Hewan", isi = kandang.idHewan.toString())
             Spacer(modifier = Modifier.padding(4.dp))
-            ComponentDetailHwn(judul = "Kapasitas", isi = kandang.kapasitas)
+            ComponentDetailHwn(judul = "Kapasitas", isi = kandang.kapasitas.toString())
             Spacer(modifier = Modifier.padding(4.dp))
             ComponentDetailHwn(judul = "Lokasi", isi = kandang.lokasi)
         }

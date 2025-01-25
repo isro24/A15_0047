@@ -187,7 +187,7 @@ fun ItemDetailHwn(
             Spacer(modifier = Modifier.padding(4.dp))
             ComponentDetailHwn(judul = "Tipe Pakan", isi = hewan.tipePakan)
             Spacer(modifier = Modifier.padding(4.dp))
-            ComponentDetailHwn(judul = "Populasi", isi = hewan.populasi)
+            ComponentDetailHwn(judul = "Populasi", isi = hewan.populasi.toString())
             Spacer(modifier = Modifier.padding(4.dp))
             ComponentDetailHwn(judul = "Zona Wilayah", isi = hewan.zonaWilayah)
         }

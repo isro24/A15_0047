@@ -24,7 +24,7 @@ data class Hewan (
     val namaHewan: String,
     @SerialName("tipe_pakan")
     val tipePakan: String,
-    val populasi: String,
+    val populasi: Int,
     @SerialName("zona_wilayah")
     val zonaWilayah: String,
 )

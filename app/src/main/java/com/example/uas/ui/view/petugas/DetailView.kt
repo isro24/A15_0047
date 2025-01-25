@@ -170,7 +170,8 @@ fun BodyDetailPtg(
                     Text(
                         text = "Delete",
                         color = Color.White
-                    )                }
+                    )
+                }
             }
         }
     }

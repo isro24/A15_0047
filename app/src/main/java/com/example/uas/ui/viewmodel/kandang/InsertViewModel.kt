@@ -34,15 +34,15 @@ data class InsertUiStateKandang(
 
 data class InsertUiEventKandang(
     val idKandang:String="",
-    val idHewan:Int=0,
-    val kapasitas:String="",
+    val idHewan:Int? = null,
+    val kapasitas: Int? = null,
     val lokasi:String="",
 )
 
 fun InsertUiEventKandang.toKnd(): Kandang = Kandang(
     idKandang = idKandang,
-    idHewan = idHewan,
-    kapasitas = kapasitas,
+    idHewan = idHewan?: 0,
+    kapasitas = kapasitas?: 0,
     lokasi = lokasi,
 )
 
