@@ -26,6 +26,14 @@ import com.example.uas.ui.view.kandang.InsertViewKandang
 import com.example.uas.ui.view.kandang.UpdateViewKandang
 import com.example.uas.ui.view.mainhome.DestinasiMainHome
 import com.example.uas.ui.view.mainhome.MainHome
+import com.example.uas.ui.view.monitoring.DestinasiDetailMonitoring
+import com.example.uas.ui.view.monitoring.DestinasiHomeMonitoring
+import com.example.uas.ui.view.monitoring.DestinasiInsertMonitoring
+import com.example.uas.ui.view.monitoring.DestinasiUpdateMonitoring
+import com.example.uas.ui.view.monitoring.DetailViewMonitoring
+import com.example.uas.ui.view.monitoring.HomeViewMonitoring
+import com.example.uas.ui.view.monitoring.InsertViewMonitoring
+import com.example.uas.ui.view.monitoring.UpdateViewMonitoring
 import com.example.uas.ui.view.petugas.DestinasiDetailPetugas
 import com.example.uas.ui.view.petugas.DestinasiHomePetugas
 import com.example.uas.ui.view.petugas.DestinasiInsertPetugas
@@ -247,5 +255,73 @@ fun PengelolaHalaman(navController: NavHostController = rememberNavController())
                 },
             )
         }
+
+
+// Monitoring
+        composable (DestinasiHomeMonitoring.route){
+            HomeViewMonitoring(
+                navigateToItemEntry = {navController.navigate(DestinasiInsertMonitoring.route)},
+                onDetailClick = { idMonitoring ->
+                    navController.navigate("${DestinasiDetailMonitoring.route}/$idMonitoring")
+                },
+                NavigateBack = {
+                    navController.navigate(DestinasiMainHome.route) {
+                        popUpTo(DestinasiMainHome.route) {
+                            inclusive = true
+                        }
+                    }
+                },
+            )
+        }
+        composable (DestinasiInsertMonitoring.route){
+            InsertViewMonitoring(navigateBack = {
+                navController.navigate(DestinasiHomeMonitoring.route){
+                    popUpTo(DestinasiHomeMonitoring.route){inclusive = true} }
+            }
+            )
+        }
+        composable(
+            DestinasiDetailMonitoring.routeWithArgs,
+            arguments = listOf(
+                navArgument(DestinasiDetailMonitoring.IDMONITORING){
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            val idMonitoring = it.arguments?.getString(DestinasiDetailMonitoring.IDMONITORING)
+            idMonitoring?.let {
+                DetailViewMonitoring(
+                    NavigateBack = {
+                        navController.navigate(DestinasiHomeMonitoring.route) {
+                            popUpTo(DestinasiHomeMonitoring.route) {
+                                inclusive = true
+                            }
+                        }
+                    },
+                    onEditClick =  {navController.navigate("${DestinasiUpdateMonitoring.route}/$it")},
+                    onDeleteClick = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+        }
+        composable(
+            DestinasiUpdateMonitoring.routeWithArgs,
+            arguments = listOf(
+                navArgument(DestinasiUpdateMonitoring.IDMONITORING) {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            UpdateViewMonitoring(
+                NavigateBack = {
+                    navController.popBackStack()
+                },
+                onNavigate = {
+                    navController.popBackStack()
+                },
+            )
+        }
     }
 }
+
