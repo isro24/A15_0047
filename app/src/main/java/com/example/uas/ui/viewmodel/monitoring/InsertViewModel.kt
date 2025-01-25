@@ -13,8 +13,23 @@ class InsertViewModelMonitoring(private val mnt: MonitoringRepository): ViewMode
     var uiState by mutableStateOf(InsertUiStateMonitoring())
         private set
 
+    fun statusHewan(hewanSakit: Int?, hewanSehat: Int?): String{
+        val total = (hewanSakit?: 0) + (hewanSehat?: 0)
+        if(total == 0) return  "Tidak Diketahui"
+        val presentase = ((hewanSakit?:0).toDouble() / total) * 100
+        return when{
+            presentase < 10 -> "Aman"
+            presentase < 50 -> "Waspada"
+            else -> "Kritis"
+        }
+    }
+
     fun updateInsertMntState(insertUiEventMonitoring: InsertUiEventMonitoring){
-        uiState = InsertUiStateMonitoring(insertUiEventMonitoring=insertUiEventMonitoring)
+        val statusBaru = statusHewan(
+            hewanSakit = insertUiEventMonitoring.hewanSakit,
+            hewanSehat = insertUiEventMonitoring.hewanSehat
+        )
+        uiState = InsertUiStateMonitoring(insertUiEventMonitoring=insertUiEventMonitoring.copy(status=statusBaru))
     }
 
     suspend fun insertMnt(){
@@ -33,22 +48,22 @@ data class InsertUiStateMonitoring(
 )
 
 data class InsertUiEventMonitoring(
-    val idMonitoring:Int=0,
-    val idPetugas:Int=0,
-    val idKandang:String="",
-    val tanggalMonitoring:String="",
-    val hewanSakit:Int=0,
-    val hewanSehat:Int=0,
-    val status:String="",
+    val idMonitoring: Int? = null,
+    val idPetugas: Int? = null,
+    val idKandang: String = "",
+    val tanggalMonitoring: String = "",
+    val hewanSakit: Int? = null,
+    val hewanSehat: Int? = null,
+    val status: String = "",
 )
 
 fun InsertUiEventMonitoring.toMnt(): Monitoring = Monitoring(
-    idMonitoring = idMonitoring,
-    idPetugas = idPetugas,
+    idMonitoring = idMonitoring ?: 0,
+    idPetugas = idPetugas?: 0,
     idKandang = idKandang,
     tanggalMonitoring = tanggalMonitoring,
-    hewanSakit = hewanSakit,
-    hewanSehat = hewanSehat,
+    hewanSakit = hewanSakit?: 0,
+    hewanSehat = hewanSehat?: 0,
     status = status
 )
 
