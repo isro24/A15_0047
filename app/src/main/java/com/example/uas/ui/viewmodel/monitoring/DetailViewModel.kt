@@ -42,6 +42,22 @@ class DetailViewModelMonitoring(
             }
         }
     }
+    fun deleteMnt() {
+        viewModelScope.launch {
+            detailUiStateMonitoring = DetailUiStateMonitoring(isLoading = true)
+            try {
+                monitoringRepository.deleteMonitoring(idMonitoring)
+
+                detailUiStateMonitoring = DetailUiStateMonitoring(isLoading = false)
+            } catch (e: Exception) {
+                detailUiStateMonitoring = DetailUiStateMonitoring(
+                    isLoading = false,
+                    isError = true,
+                    errorMessage = e.message ?: "Unknown Error"
+                )
+            }
+        }
+    }
 }
 
 
