@@ -14,6 +14,10 @@ import com.example.uas.ui.viewmodel.kandang.DetailViewModelKandang
 import com.example.uas.ui.viewmodel.kandang.HomeViewModelKandang
 import com.example.uas.ui.viewmodel.kandang.InsertViewModelKandang
 import com.example.uas.ui.viewmodel.kandang.UpdateViewModelKandang
+import com.example.uas.ui.viewmodel.monitoring.DetailViewModelMonitoring
+import com.example.uas.ui.viewmodel.monitoring.HomeViewModelMonitoring
+import com.example.uas.ui.viewmodel.monitoring.InsertViewModelMonitoring
+import com.example.uas.ui.viewmodel.monitoring.UpdateViewModelMonitoring
 import com.example.uas.ui.viewmodel.petugas.DetailViewModelPetugas
 import com.example.uas.ui.viewmodel.petugas.HomeViewModelPetugas
 import com.example.uas.ui.viewmodel.petugas.InsertViewModelPetugas
@@ -35,6 +39,11 @@ object PenyediaViewModel {
         initializer { InsertViewModelKandang(aplikasiZoo().containerKandang.kandangRepository) }
         initializer { DetailViewModelKandang(createSavedStateHandle(),aplikasiZoo().containerKandang.kandangRepository) }
         initializer { UpdateViewModelKandang(createSavedStateHandle(),aplikasiZoo().containerKandang.kandangRepository) }
+
+        initializer { HomeViewModelMonitoring(aplikasiZoo().containerMonitoring.monitoringRepository) }
+        initializer { InsertViewModelMonitoring(aplikasiZoo().containerMonitoring.monitoringRepository) }
+        initializer { DetailViewModelMonitoring(createSavedStateHandle(),aplikasiZoo().containerMonitoring.monitoringRepository) }
+        initializer { UpdateViewModelMonitoring(createSavedStateHandle(),aplikasiZoo().containerMonitoring.monitoringRepository) }
     }
 }
 
