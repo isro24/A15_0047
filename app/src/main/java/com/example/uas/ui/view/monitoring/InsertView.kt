@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,7 +37,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uas.R
+import com.example.uas.model.Hewan
+import com.example.uas.model.Kandang
+import com.example.uas.model.Petugas
 import com.example.uas.ui.customwidget.CustomeTopAppBar
+import com.example.uas.ui.customwidget.DropDownKandang
+import com.example.uas.ui.customwidget.DropDownNamaPetugas
 import com.example.uas.ui.navigation.DestinasiNavigasi
 import com.example.uas.ui.viewmodel.PenyediaViewModel
 import com.example.uas.ui.viewmodel.monitoring.InsertUiEventMonitoring
@@ -63,6 +67,11 @@ fun InsertViewMonitoring(
 ){
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
+    val listPetugas = viewModel.listPetugas
+    val listKandang = viewModel.listKandang
+    val listHewan = viewModel.listHewan
+
     Scaffold (
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -82,6 +91,9 @@ fun InsertViewMonitoring(
             EntryBodyMonitoring(
                 insertUiStateMonitoring = viewModel.uiState,
                 onMonitoringValueChange = viewModel::updateInsertMntState,
+                listPetugas = listPetugas,
+                listKandang = listKandang,
+                listHewan = listHewan,
                 onSaveClick = {
                     coroutineScope.launch {
                         viewModel.insertMnt()
@@ -101,6 +113,9 @@ fun EntryBodyMonitoring(
     insertUiStateMonitoring: InsertUiStateMonitoring,
     onMonitoringValueChange: (InsertUiEventMonitoring) -> Unit,
     onSaveClick: () -> Unit,
+    listPetugas: List<Petugas>,
+    listKandang: List<Kandang>,
+    listHewan: List<Hewan>,
     modifier: Modifier = Modifier
 ){
     Column (
@@ -110,7 +125,10 @@ fun EntryBodyMonitoring(
         FormInput(
             insertUiEventMonitoring = insertUiStateMonitoring.insertUiEventMonitoring,
             onValueChange = onMonitoringValueChange,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            listPetugas = listPetugas,
+            listKandang = listKandang,
+            listHewan = listHewan
         )
         Button(
             onClick = onSaveClick,
@@ -130,7 +148,10 @@ fun FormInput(
     insertUiEventMonitoring: InsertUiEventMonitoring,
     modifier: Modifier = Modifier,
     onValueChange: (InsertUiEventMonitoring) -> Unit = {},
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    listPetugas: List<Petugas> = emptyList(),
+    listKandang: List<Kandang> = emptyList(),
+    listHewan: List<Hewan> = emptyList(),
 ) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
@@ -145,37 +166,26 @@ fun FormInput(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        OutlinedTextField(
-            value = insertUiEventMonitoring.idPetugas?.toString() ?: "",
-            onValueChange = {
-                val intValue = it.toIntOrNull()
-                onValueChange(insertUiEventMonitoring.copy(idPetugas = intValue))
-            },
-            label = { Text(text = "Id Petugas") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true,
-            leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = "Id Petugas"
-                )
-            }
+
+        var expanded by remember { mutableStateOf(false) }
+        var selectedNamaPetugas by remember { mutableStateOf("") }
+        var selectedKandang by remember { mutableStateOf("") }
+        var selectedHewan by remember { mutableStateOf("") }
+
+        DropDownNamaPetugas(
+            expanded = remember { mutableStateOf(expanded) },
+            selectedNamaPetugas = remember { mutableStateOf(selectedNamaPetugas) },
+            onValueChange = { idPetugas -> onValueChange(insertUiEventMonitoring.copy(idPetugas = idPetugas))},
+            listPetugas = listPetugas.filter { it.jabatan == "Dokter Hewan" }
         )
-        OutlinedTextField(
-            value = insertUiEventMonitoring.idKandang,
-            onValueChange = { onValueChange(insertUiEventMonitoring.copy(idKandang = it)) },
-            label = { Text(text = "Id Kandang") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true,
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.cageicon,),
-                    contentDescription = "Id Kandang",
-                    modifier = Modifier.size(30.dp)
-                )
-            }
+
+        DropDownKandang(
+            expanded = remember { mutableStateOf(expanded) },
+            selectedKandang = remember { mutableStateOf(selectedKandang) },
+            selectedHewan = remember { mutableStateOf(selectedHewan) },
+            onValueChange = { idKandang -> onValueChange(insertUiEventMonitoring.copy(idKandang = idKandang)) },
+            listKandang = listKandang,
+            listHewan = listHewan
         )
 
         OutlinedTextField(
