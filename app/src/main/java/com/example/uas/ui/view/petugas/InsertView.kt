@@ -4,13 +4,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
@@ -32,13 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uas.ui.customwidget.CustomeTopAppBar
-import com.example.uas.ui.customwidget.DropDownTipePakan
 import com.example.uas.ui.navigation.DestinasiNavigasi
-import com.example.uas.ui.view.hewan.DestinasiInsertHewan
 import com.example.uas.ui.viewmodel.PenyediaViewModel
-import com.example.uas.ui.viewmodel.hewan.InsertUiEvent
-import com.example.uas.ui.viewmodel.hewan.InsertUiState
-import com.example.uas.ui.viewmodel.hewan.InsertViewModel
 import com.example.uas.ui.viewmodel.petugas.InsertUiEventPetugas
 import com.example.uas.ui.viewmodel.petugas.InsertUiStatePetugas
 import com.example.uas.ui.viewmodel.petugas.InsertViewModelPetugas
@@ -140,7 +137,13 @@ fun FormInput(
             label = { Text(text = "Nama Petugas") },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
-            singleLine = true
+            singleLine = true,
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = "Nama Petugas"
+                )
+            }
         )
         Text(text = "Jabatan", fontWeight = FontWeight.Bold)
 

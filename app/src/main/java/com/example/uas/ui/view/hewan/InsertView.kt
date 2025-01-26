@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -24,9 +26,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.uas.R
 import com.example.uas.ui.customwidget.CustomeTopAppBar
 import com.example.uas.ui.customwidget.DropDownTipePakan
 import com.example.uas.ui.navigation.DestinasiNavigasi
@@ -135,7 +139,14 @@ fun FormInput(
             label = { Text(text = "Nama Hewan") },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
-            singleLine = true
+            singleLine = true,
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.lionicon),
+                    contentDescription = "Nama Hewan",
+                    modifier = Modifier.size(30.dp)
+                )
+            }
         )
         DropDownTipePakan(
             selectedValue = chosenDropdown,
@@ -144,7 +155,7 @@ fun FormInput(
             onValueChangedEvent = {
                 chosenDropdown = it
                 onValueChange(insertUiEvent.copy(tipePakan = it))
-            }
+            },
         )
         OutlinedTextField(
             value = insertUiEvent.populasi?.toString()?: "",
@@ -155,7 +166,14 @@ fun FormInput(
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.populasi),
+                    contentDescription = "Populasi",
+                    modifier = Modifier.size(30.dp)
+                )
+            }
         )
         OutlinedTextField(
             value = insertUiEvent.zonaWilayah,
@@ -163,7 +181,14 @@ fun FormInput(
             label = { Text(text = "Zona Wilayah") },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
-            singleLine = true
+            singleLine = true,
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.zonawilayah),
+                    contentDescription = "Zona Wilayah",
+                    modifier = Modifier.size(30.dp)
+                )
+            }
         )
         if (enabled){
             Text(
