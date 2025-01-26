@@ -35,7 +35,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.uas.model.Hewan
+import com.example.uas.model.Kandang
 import com.example.uas.model.Monitoring
+import com.example.uas.model.Petugas
 import com.example.uas.ui.customwidget.CustomeTopAppBar
 import com.example.uas.ui.navigation.DestinasiNavigasi
 import com.example.uas.ui.viewmodel.PenyediaViewModel
@@ -61,6 +64,10 @@ fun DetailViewMonitoring(
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
+    val listPetugas = viewModel.listPetugas
+    val listKandang = viewModel.listKandang
+    val listHewan = viewModel.listHewan
+
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -78,7 +85,7 @@ fun DetailViewMonitoring(
             FloatingActionButton(
                 onClick = onEditClick,
                 shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(18.dp)
+                modifier = Modifier.padding(18.dp),
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
@@ -92,12 +99,15 @@ fun DetailViewMonitoring(
         BodyDetailMnt(
             detailUiStateMonitoring = viewModel.detailUiStateMonitoring,
             modifier = Modifier.padding(innerPadding)
-                .padding(horizontal = 20.dp, ),
+                .padding(horizontal = 20.dp),
             onDeleteClick = {
                 deleteConfirmationRequired = true
             },
             retryAction = { viewModel.getMonitoringById()
-            }
+            },
+            listPetugas = listPetugas,
+            listKandang = listKandang,
+            listHewan = listHewan,
         )
         if (deleteConfirmationRequired) {
             DeleteConfirmationDialog(
@@ -121,6 +131,9 @@ fun BodyDetailMnt(
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     detailUiStateMonitoring: DetailUiStateMonitoring,
+    listPetugas: List<Petugas>,
+    listKandang: List<Kandang>,
+    listHewan: List<Hewan>,
     onDeleteClick: () -> Unit
 ) {
     when {
@@ -151,7 +164,10 @@ fun BodyDetailMnt(
             ) {
                 ItemDetailMnt(
                     monitoring = detailUiStateMonitoring.detailUiEventMonitoring.toMnt(),
-                    modifier = modifier
+                    modifier = modifier,
+                    listPetugas = listPetugas,
+                    listKandang = listKandang,
+                    listHewan = listHewan
                 )
                 Button(
                     onClick = onDeleteClick,
@@ -179,7 +195,19 @@ fun BodyDetailMnt(
 fun ItemDetailMnt(
     modifier: Modifier = Modifier,
     monitoring: Monitoring,
+    listPetugas: List<Petugas> = emptyList(),
+    listKandang: List<Kandang> = emptyList(),
+    listHewan: List<Hewan> = emptyList(),
 ){
+    val namaPetugas = listPetugas.find { it.idPetugas == monitoring.idPetugas }?.namaPetugas ?: "Tidak Diketahui"
+    val hewanMap = listHewan.associateBy { it.idHewan }
+    val kandangWithHewan = listKandang.map { kandang ->
+        val hewanNama = hewanMap[kandang.idHewan]?.namaHewan ?: "Tidak Diketahui"
+        "${kandang.idKandang} - $hewanNama"
+    }
+
+    val kandangText = if (kandangWithHewan.isNotEmpty()) kandangWithHewan.joinToString("") else "Data tidak tersedia"
+
     Card(
         modifier = modifier.fillMaxWidth().padding(top = 20.dp),
         colors = CardDefaults.cardColors(
@@ -191,9 +219,9 @@ fun ItemDetailMnt(
             modifier = Modifier
                 .padding(16.dp)
         ) {
-            ComponentDetailMnt(judul = "Id Petugas", isi = monitoring.idPetugas.toString())
+            ComponentDetailMnt(judul = "Nama Petugas", isi = namaPetugas)
             Spacer(modifier = Modifier.padding(4.dp))
-            ComponentDetailMnt(judul = "Id Kandang", isi = monitoring.idKandang)
+            ComponentDetailMnt(judul = "Data Kandang", isi = kandangText)
             Spacer(modifier = Modifier.padding(4.dp))
             ComponentDetailMnt(judul = "Tanggal Monitoring", isi = monitoring.tanggalMonitoring)
             Spacer(modifier = Modifier.padding(4.dp))
