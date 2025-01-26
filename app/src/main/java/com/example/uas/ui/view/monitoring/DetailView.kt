@@ -200,13 +200,15 @@ fun ItemDetailMnt(
     listHewan: List<Hewan> = emptyList(),
 ){
     val namaPetugas = listPetugas.find { it.idPetugas == monitoring.idPetugas }?.namaPetugas ?: "Tidak Diketahui"
-    val hewanMap = listHewan.associateBy { it.idHewan }
-    val kandangWithHewan = listKandang.map { kandang ->
-        val hewanNama = hewanMap[kandang.idHewan]?.namaHewan ?: "Tidak Diketahui"
-        "${kandang.idKandang} - $hewanNama"
-    }
 
-    val kandangText = if (kandangWithHewan.isNotEmpty()) kandangWithHewan.joinToString("") else "Data tidak tersedia"
+    val kandangTerkait = listKandang.find { it.idKandang == monitoring.idKandang }
+    val hewanNama = kandangTerkait?.let { kandang ->
+        listHewan.find { it.idHewan == kandang.idHewan }?.namaHewan ?: "Tidak Diketahui"
+    } ?: "Data tidak tersedia"
+
+    val dataKandang = kandangTerkait?.let { kandang ->
+        "${kandang.idKandang} - $hewanNama"
+    } ?: "Data tidak tersedia"
 
     Card(
         modifier = modifier.fillMaxWidth().padding(top = 20.dp),
@@ -221,7 +223,7 @@ fun ItemDetailMnt(
         ) {
             ComponentDetailMnt(judul = "Nama Petugas", isi = namaPetugas)
             Spacer(modifier = Modifier.padding(4.dp))
-            ComponentDetailMnt(judul = "Data Kandang", isi = kandangText)
+            ComponentDetailMnt(judul = "Data Kandang", isi = dataKandang)
             Spacer(modifier = Modifier.padding(4.dp))
             ComponentDetailMnt(judul = "Tanggal Monitoring", isi = monitoring.tanggalMonitoring)
             Spacer(modifier = Modifier.padding(4.dp))
