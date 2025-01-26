@@ -2,7 +2,6 @@ package com.example.uas.ui.view.petugas
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +34,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
@@ -100,6 +101,15 @@ fun HomeViewPetugas(
         ) {
             HeaderSection()
 
+            Text(
+                text = "Daftar Petugas Kebun Binatang",
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .align(Alignment.CenterHorizontally),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
             HomeStatusPetugas(
                 homeUiStatePetugas = viewModel.ptgUiState,
                 retryAction = {viewModel.getPtg()},
@@ -117,39 +127,48 @@ fun HeaderSection() {
             .fillMaxWidth()
             .height(220.dp)
             .clip(RoundedCornerShape(bottomStart = 50.dp, bottomEnd = 50.dp))
-            .background(color = Color(0xFF28D15A))
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF21AB49),
+                        Color(0xFF13C8D1)
+                    )
+                )
+            )
+
     ) {
         Image(
-            painter = painterResource(id = R.drawable.bg3),
+            painter = painterResource(id = R.drawable.bgpetugas),
             contentDescription = "Header Background",
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .alpha(0.1f),
             contentScale = ContentScale.Crop
         )
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 50.dp),
+                .padding(top = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.size(40.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(
-                    modifier = Modifier.padding(start = 25.dp)
-                ) {
-                }
-                Box(
-                    modifier = Modifier.padding(end = 35.dp, bottom = 15.dp),
-                    contentAlignment = Alignment.CenterEnd
-                ) {
-                }
-            }
-            Spacer(modifier = Modifier.size(30.dp))
+            Text(
+                text = "Informasi dan Manajemen",
+                style = MaterialTheme.typography.headlineLarge,
+                color = Color.White
+            )
+            Text(
+                text = "Petugas",
+                style = MaterialTheme.typography.headlineMedium,
+                color = Color.White
+            )
+
+            Spacer(modifier = Modifier.padding(5.dp))
+            Text(
+                text = "Mari kelola data Petugas",
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White
+            )
         }
     }
 }

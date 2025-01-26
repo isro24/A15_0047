@@ -2,7 +2,6 @@ package com.example.uas.ui.view.hewan
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -28,6 +28,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -41,7 +42,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -59,7 +62,7 @@ import com.example.uas.ui.viewmodel.hewan.HomeViewModel
 
 object DestinasiHomeHewan : DestinasiNavigasi{
     override val route = "homehewan"
-    override val titleRes = "Home Hewan"
+    override val titleRes = "Halaman Hewan"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -115,6 +118,17 @@ fun HomeScreenHewan(
                     search = it
                 },
             )
+
+            Text(
+                text = "Daftar Hewan Kebun Binatang",
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .align(Alignment.CenterHorizontally)
+                    .offset(y = (-50).dp),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
             HomeStatusHewan(
                 homeUiState = viewModel.hwnUiState,
                 retryAction = {viewModel.getHwn()},
@@ -137,39 +151,48 @@ fun HeaderSection() {
             .fillMaxWidth()
             .height(220.dp)
             .clip(RoundedCornerShape(bottomStart = 50.dp, bottomEnd = 50.dp))
-            .background(color = Color(0xFF28D15A))
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF21AB49),
+                        Color(0xFF13C8D1)
+                    )
+                )
+            )
+
     ) {
         Image(
-            painter = painterResource(id = R.drawable.bg1),
+            painter = painterResource(id = R.drawable.bghewan),
             contentDescription = "Header Background",
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .alpha(0.2f),
             contentScale = ContentScale.Crop
         )
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 50.dp),
+                .padding(top = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.size(40.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(
-                    modifier = Modifier.padding(start = 25.dp)
-                ) {
-                }
-                Box(
-                    modifier = Modifier.padding(end = 35.dp, bottom = 15.dp),
-                    contentAlignment = Alignment.CenterEnd
-                ) {
-                }
-            }
-            Spacer(modifier = Modifier.size(30.dp))
+            Text(
+                text = "Informasi dan Manajemen",
+                style = MaterialTheme.typography.headlineLarge,
+                color = Color.White
+            )
+            Text(
+                text = "Hewan",
+                style = MaterialTheme.typography.headlineMedium,
+                color = Color.White
+            )
+
+            Spacer(modifier = Modifier.padding(5.dp))
+            Text(
+                text = "Mari kelola data Hewan",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.White
+            )
         }
     }
 }
@@ -291,8 +314,8 @@ fun HwnLayout(
             HwnCard(
                 hewan = hewan,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onDetailClick(hewan) },
+                    .fillMaxWidth(),
+                onDetailClick = onDetailClick
             )
         }
     }
@@ -302,11 +325,12 @@ fun HwnLayout(
 fun HwnCard(
     hewan: Hewan,
     modifier: Modifier = Modifier,
-){
+    onDetailClick: (Hewan) -> Unit,
+    ){
 
     val textColor = when(hewan.tipePakan){
         "Karnivora" -> Color.Red
-        "Herbivora" -> Color.Green
+        "Herbivora" -> Color(0xFF377D22)
         "Omnivora" -> Color.Blue
         else -> Color.Black
 
@@ -317,19 +341,39 @@ fun HwnCard(
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ){
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ){
-            Text(
-                text = hewan.namaHewan,
-                style = MaterialTheme.typography.titleMedium
-            )
-            Text(
-                text = hewan.tipePakan,
-                style = MaterialTheme.typography.titleMedium,
-                color = textColor
-            )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(5.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = hewan.namaHewan,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = hewan.tipePakan,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = textColor
+                )
+            }
+            IconButton(
+                onClick = { onDetailClick(hewan) },
+                modifier = Modifier
+                    .size(70.dp)
+                    .padding(end = 10.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Info,
+                    contentDescription = "Detail Hewan",
+                    modifier = Modifier.size(35.dp)
+                )
+            }
         }
     }
 }

@@ -14,6 +14,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,10 +25,10 @@ fun CustomeTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior?=null,
     navigateUp:() -> Unit = {},
     onRefresh:() -> Unit = {},
-    backgroundColor: Color = Color(0xFF28D15A)
+    backgroundColor: Color = Color(0xFF21AB49)
 ){
     CenterAlignedTopAppBar(
-        title = { Text(text = title, color = Color.White) },
+        title = { Text(text = title, color = Color.White, fontWeight = FontWeight.Bold,) },
         actions = {
             Icon(imageVector = Icons.Default.Refresh, contentDescription = "", tint =  Color.White, modifier= Modifier.clickable {
                 onRefresh()

@@ -2,7 +2,6 @@ package com.example.uas.ui.view.kandang
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -28,6 +28,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -41,7 +42,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
@@ -115,6 +118,17 @@ fun HomeViewKandang(
                     search = it
                 },
             )
+
+            Text(
+                text = "Daftar Kandang Kebun Binatang",
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .align(Alignment.CenterHorizontally)
+                    .offset(y = (-50).dp),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
             HomeStatusKandang(
                 homeUiStateKandang = viewModel.kndUiState,
                 retryAction = {viewModel.getKnd()},
@@ -137,39 +151,47 @@ fun HeaderSection() {
             .fillMaxWidth()
             .height(220.dp)
             .clip(RoundedCornerShape(bottomStart = 50.dp, bottomEnd = 50.dp))
-            .background(color = Color(0xFF28D15A))
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF21AB49),
+                        Color(0xFF13C8D1)
+                    )
+                )
+            )
+
     ) {
         Image(
-            painter = painterResource(id = R.drawable.bg2),
+            painter = painterResource(id = R.drawable.bgkandang),
             contentDescription = "Header Background",
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .alpha(0.1f),
             contentScale = ContentScale.Crop
         )
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 50.dp),
+                .padding(top = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.size(40.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(
-                    modifier = Modifier.padding(start = 25.dp)
-                ) {
-                }
-                Box(
-                    modifier = Modifier.padding(end = 35.dp, bottom = 15.dp),
-                    contentAlignment = Alignment.CenterEnd
-                ) {
-                }
-            }
-            Spacer(modifier = Modifier.size(30.dp))
+            Text(
+                text = "Informasi dan Manajemen",
+                style = MaterialTheme.typography.headlineLarge,
+                color = Color.White
+            )
+            Text(
+                text = "Kandang",
+                style = MaterialTheme.typography.headlineMedium,
+                color = Color.White
+            )
+            Spacer(modifier = Modifier.padding(5.dp))
+            Text(
+                text = "Mari kelola data Kandang",
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White
+            )
         }
     }
 }
@@ -216,7 +238,7 @@ fun HomeStatusKandang(
 
         is HomeUiStateKandang.Success ->{
             val filteredKandang = homeUiStateKandang.kandang.filter {
-                it.lokasi.contains(search, ignoreCase = true)
+                it.idKandang.contains(search, ignoreCase = true)
             }
             if (homeUiStateKandang.kandang.isEmpty() || filteredKandang.isEmpty()){
                 Box(
@@ -235,7 +257,7 @@ fun HomeStatusKandang(
                     kandang = filteredKandang,
                     modifier=modifier.fillMaxWidth(),
                     onDetailClick = {
-                        onDetailClick(it.idKandang.toString())
+                        onDetailClick(it.idKandang)
                     }
                 )
             }
@@ -291,8 +313,8 @@ fun KndLayout(
             KndCard(
                 kandang = kandang,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onDetailClick(kandang) },
+                    .fillMaxWidth(),
+                onDetailClick = onDetailClick
             )
         }
     }
@@ -302,21 +324,35 @@ fun KndLayout(
 fun KndCard(
     kandang: Kandang,
     modifier: Modifier = Modifier,
+    onDetailClick: (Kandang) -> Unit,
 ){
-
     Card (
         modifier = modifier,
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ){
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ){
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Text(
                 text = kandang.idKandang,
                 style = MaterialTheme.typography.titleMedium
             )
+
+            IconButton(
+                onClick = { onDetailClick(kandang) },
+                modifier = Modifier.size(35.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Info,
+                    contentDescription = "Detail Kandang",
+                    modifier = Modifier.size(35.dp)
+                )
+            }
         }
     }
 }
