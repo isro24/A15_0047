@@ -9,6 +9,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.uas.model.Hewan
+import com.example.uas.model.Kandang
+import com.example.uas.model.Petugas
 import com.example.uas.ui.customwidget.CustomeTopAppBar
 import com.example.uas.ui.navigation.DestinasiNavigasi
 import com.example.uas.ui.viewmodel.PenyediaViewModel
@@ -31,7 +34,10 @@ fun UpdateViewMonitoring(
     NavigateBack: () -> Unit,
     onNavigate:()-> Unit,
     modifier: Modifier = Modifier,
-    viewModel: UpdateViewModelMonitoring = viewModel(factory = PenyediaViewModel.Factory)
+    viewModel: UpdateViewModelMonitoring = viewModel(factory = PenyediaViewModel.Factory),
+    listPetugas: List<Petugas> = emptyList(),
+    listKandang: List<Kandang> = emptyList(),
+    listHewan: List<Hewan> = emptyList(),
 ){
     val coroutineScope = rememberCoroutineScope()
 
@@ -51,6 +57,9 @@ fun UpdateViewMonitoring(
                 .fillMaxWidth(),
             onMonitoringValueChange = viewModel::updateInsertMntState,
             insertUiStateMonitoring = viewModel.updateUIStateMonitoring,
+            listPetugas = listPetugas,
+            listKandang = listKandang,
+            listHewan = listHewan,
             onSaveClick = {
                 coroutineScope.launch {
                     viewModel.updateData()
