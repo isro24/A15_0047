@@ -9,6 +9,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.uas.model.Hewan
 import com.example.uas.ui.customwidget.CustomeTopAppBar
 import com.example.uas.ui.navigation.DestinasiNavigasi
 import com.example.uas.ui.viewmodel.PenyediaViewModel
@@ -31,9 +32,11 @@ fun UpdateViewKandang(
     NavigateBack: () -> Unit,
     onNavigate:()-> Unit,
     modifier: Modifier = Modifier,
+    listHewan: List<Hewan> = emptyList(),
     viewModel: UpdateViewModelKandang = viewModel(factory = PenyediaViewModel.Factory)
 ){
     val coroutineScope = rememberCoroutineScope()
+
 
     Scaffold (
         modifier = modifier,
@@ -51,6 +54,7 @@ fun UpdateViewKandang(
                 .fillMaxWidth(),
             onKandangValueChange = viewModel::updateInsertKndState,
             insertUiStateKandang = viewModel.updateUIStateKandang,
+            listHewan = listHewan,
             onSaveClick = {
                 coroutineScope.launch {
                     viewModel.updateData()

@@ -1,5 +1,6 @@
 package com.example.uas.repository
 
+import com.example.uas.model.AllHewanResponse
 import com.example.uas.model.AllKandangResponse
 import com.example.uas.model.Kandang
 import com.example.uas.model.KandangDetailResponse
@@ -16,6 +17,9 @@ interface KandangRepository{
     suspend fun deleteKandang(idKandang: String)
 
     suspend fun getKandangById(idKandang: String): KandangDetailResponse
+
+    suspend fun getHewan(): AllHewanResponse
+
 }
 
 class NetworkKandangRepository(
@@ -46,6 +50,9 @@ class NetworkKandangRepository(
 
     override suspend fun getKandang(): AllKandangResponse =
         kandangApiService.getAllKandang()
+
+    override suspend fun getHewan(): AllHewanResponse =
+        kandangApiService.getAllHewan()
 
     override suspend fun getKandangById(idKandang: String): KandangDetailResponse {
         return kandangApiService.getKandangById(idKandang)

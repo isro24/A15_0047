@@ -1,5 +1,6 @@
 package com.example.uas.service_api
 
+import com.example.uas.model.AllHewanResponse
 import com.example.uas.model.AllKandangResponse
 import com.example.uas.model.Kandang
 import com.example.uas.model.KandangDetailResponse
@@ -23,6 +24,9 @@ interface KandangService {
 
     @GET(".")
     suspend fun getAllKandang(): AllKandangResponse
+
+    @GET("hewan")
+    suspend fun getAllHewan(): AllHewanResponse
 
     @GET("{id_kandang}")
     suspend fun getKandangById(@Path("id_kandang") idKandang:String): KandangDetailResponse
