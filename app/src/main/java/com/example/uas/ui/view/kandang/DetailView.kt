@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.uas.model.Hewan
 import com.example.uas.model.Kandang
 import com.example.uas.ui.customwidget.CustomeTopAppBar
 import com.example.uas.ui.navigation.DestinasiNavigasi
@@ -59,6 +60,8 @@ fun DetailViewKandang(
     viewModel: DetailViewModelKandang = viewModel(factory = PenyediaViewModel.Factory)
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
+    val listHewan = viewModel.listHewan
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -96,8 +99,9 @@ fun DetailViewKandang(
                 deleteConfirmationRequired = true
             },
             retryAction = { viewModel.getKandangById()
-            }
-        )
+            },
+            listHewan = listHewan,
+            )
 
         if (deleteConfirmationRequired) {
             DeleteConfirmationDialog(
@@ -121,6 +125,7 @@ fun BodyDetailKnd(
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     detailUiStateKandang: DetailUiStateKandang,
+    listHewan: List<Hewan>,
     onDeleteClick: () -> Unit
 ) {
     when {
@@ -151,8 +156,9 @@ fun BodyDetailKnd(
             ) {
                 ItemDetailKnd(
                     kandang = detailUiStateKandang.detailUiEventKandang.toKnd(),
-                    modifier = modifier
-                )
+                    modifier = modifier,
+                    listHewan = listHewan,
+                    )
 
                 Button(
                     onClick = onDeleteClick,
@@ -171,8 +177,12 @@ fun BodyDetailKnd(
 @Composable
 fun ItemDetailKnd(
     modifier: Modifier = Modifier,
-    kandang: Kandang
+    kandang: Kandang,
+    listHewan: List<Hewan> = emptyList()
 ){
+
+    val namaHewan = listHewan.find { it.idHewan == kandang.idHewan }?.namaHewan ?: "Tidak Diketahui"
+
     Card(
         modifier = modifier.fillMaxWidth().padding(top = 20.dp),
         colors = CardDefaults.cardColors(
@@ -186,7 +196,7 @@ fun ItemDetailKnd(
         ) {
             ComponentDetailHwn(judul = "Id Kandang", isi = kandang.idKandang)
             Spacer(modifier = Modifier.padding(4.dp))
-            ComponentDetailHwn(judul = "Nama Hewan", isi = kandang.idHewan.toString())
+            ComponentDetailHwn(judul = "Nama Hewan", isi = namaHewan)
             Spacer(modifier = Modifier.padding(4.dp))
             ComponentDetailHwn(judul = "Kapasitas", isi = kandang.kapasitas.toString())
             Spacer(modifier = Modifier.padding(4.dp))
