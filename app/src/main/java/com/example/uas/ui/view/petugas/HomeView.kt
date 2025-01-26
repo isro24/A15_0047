@@ -54,7 +54,7 @@ import com.example.uas.ui.viewmodel.petugas.HomeViewModelPetugas
 
 object DestinasiHomePetugas : DestinasiNavigasi {
     override val route = "homepetugas"
-    override val titleRes = "Home Petugas"
+    override val titleRes = "Halaman Petugas"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

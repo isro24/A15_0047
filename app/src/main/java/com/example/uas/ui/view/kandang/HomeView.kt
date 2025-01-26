@@ -62,7 +62,7 @@ import com.example.uas.ui.viewmodel.kandang.HomeViewModelKandang
 
 object DestinasiHomeKandang : DestinasiNavigasi {
     override val route = "homekandang"
-    override val titleRes = "Home Kandang"
+    override val titleRes = "Halaman Kandang"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

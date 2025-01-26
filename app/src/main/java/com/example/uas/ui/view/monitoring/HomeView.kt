@@ -57,7 +57,7 @@ import java.util.Locale
 
 object DestinasiHomeMonitoring : DestinasiNavigasi {
     override val route = "homemonitoring"
-    override val titleRes = "Home Monitoring"
+    override val titleRes = "Halaman Monitoring"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
