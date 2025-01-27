@@ -15,9 +15,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,10 +38,15 @@ import com.example.uas.ui.customwidget.CustomeTopAppBar
 import com.example.uas.ui.customwidget.DropDownTipePakan
 import com.example.uas.ui.navigation.DestinasiNavigasi
 import com.example.uas.ui.viewmodel.PenyediaViewModel
+import com.example.uas.ui.viewmodel.hewan.FormErrorState
 import com.example.uas.ui.viewmodel.hewan.InsertUiEvent
 import com.example.uas.ui.viewmodel.hewan.InsertUiState
 import com.example.uas.ui.viewmodel.hewan.InsertViewModel
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 object DestinasiInsertHewan: DestinasiNavigasi {
     override val route = "item_entry"
@@ -52,8 +60,25 @@ fun InsertViewHewan(
     modifier: Modifier = Modifier,
     viewModel: InsertViewModel = viewModel(factory= PenyediaViewModel.Factory)
 ){
+    val uiState = viewModel.uiState
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    val systemUiController = rememberSystemUiController()
+    LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(Color.White)
+    }
+
+    LaunchedEffect(uiState.snackBarMessage) {
+        uiState.snackBarMessage?.let { message ->
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar(message)
+                viewModel.resetSnackBarMessage()
+            }
+        }
+    }
+
     Scaffold (
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -61,9 +86,10 @@ fun InsertViewHewan(
                 title  = DestinasiInsertHewan.titleRes,
                 canNavigateBack = true,
                 scrollBehavior = scrollBehavior,
-                navigateUp = navigateBack
+                navigateUp = { viewModel.handleNavigateBack(systemUiController, navigateBack)}
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -75,10 +101,18 @@ fun InsertViewHewan(
                 onHewanValueChange = viewModel::updateInsertHwnState,
                 onSaveClick = {
                     coroutineScope.launch {
-                        viewModel.insertHwn()
-                        navigateBack()
+                        if (viewModel.validateFields()){
+                            viewModel.insertHwn()
+                            delay(600)
+                            withContext(Dispatchers.Main){
+                                navigateBack()
+                            }
+                        }else{
+                            snackbarHostState.showSnackbar("Data tidak valid")
+                        }
                     }
                 },
+                uiState = uiState,
                 modifier = Modifier
                     .padding(horizontal = 30.dp, vertical = 10.dp)
                     .fillMaxWidth()
@@ -89,6 +123,7 @@ fun InsertViewHewan(
 
 @Composable
 fun EntryBody(
+    uiState: InsertUiState,
     insertUiState: InsertUiState,
     onHewanValueChange: (InsertUiEvent) -> Unit,
     onSaveClick: () -> Unit,
@@ -101,7 +136,8 @@ fun EntryBody(
         FormInput(
             insertUiEvent = insertUiState.insertUiEvent,
             onValueChange = onHewanValueChange,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            errorState = uiState.isEntryValid
         )
         Button(
             onClick = onSaveClick,
@@ -120,6 +156,7 @@ fun EntryBody(
 fun FormInput(
     insertUiEvent: InsertUiEvent,
     modifier: Modifier = Modifier,
+    errorState: FormErrorState = FormErrorState(),
     onValueChange: (InsertUiEvent) -> Unit = {},
     enabled: Boolean = true
 ){
@@ -131,13 +168,14 @@ fun FormInput(
 
     Column (
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(5.dp)
     ){
         OutlinedTextField(
             value = insertUiEvent.namaHewan,
             onValueChange = {onValueChange(insertUiEvent.copy(namaHewan = it))},
             label = { Text(text = "Nama Hewan") },
             modifier = Modifier.fillMaxWidth(),
+            isError = errorState.namaHewanError!= null,
             enabled = enabled,
             singleLine = true,
             leadingIcon = {
@@ -148,6 +186,10 @@ fun FormInput(
                 )
             }
         )
+        Text(
+            text = errorState.namaHewanError ?: "",
+            color = Color.Red
+        )
         DropDownTipePakan(
             selectedValue = chosenDropdown,
             options = tipePakan,
@@ -157,6 +199,10 @@ fun FormInput(
                 onValueChange(insertUiEvent.copy(tipePakan = it))
             },
         )
+        Text(
+            text = errorState.tipePakanError ?: "",
+            color = Color.Red
+        )
         OutlinedTextField(
             value = insertUiEvent.populasi?.toString()?: "",
             onValueChange = {
@@ -164,6 +210,7 @@ fun FormInput(
                 onValueChange(insertUiEvent.copy(populasi = intValue))},
             label = { Text(text = "Populasi") },
             modifier = Modifier.fillMaxWidth(),
+            isError = errorState.populasiError!= null,
             enabled = enabled,
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -175,11 +222,16 @@ fun FormInput(
                 )
             }
         )
+        Text(
+            text = errorState.populasiError ?: "",
+            color = Color.Red
+        )
         OutlinedTextField(
             value = insertUiEvent.zonaWilayah,
             onValueChange = {onValueChange(insertUiEvent.copy(zonaWilayah = it))},
             label = { Text(text = "Zona Wilayah") },
             modifier = Modifier.fillMaxWidth(),
+            isError = errorState.zonaWilayahError!= null,
             enabled = enabled,
             singleLine = true,
             leadingIcon = {
@@ -189,6 +241,10 @@ fun FormInput(
                     modifier = Modifier.size(30.dp)
                 )
             }
+        )
+        Text(
+            text = errorState.zonaWilayahError ?: "",
+            color = Color.Red
         )
         if (enabled){
             Text(
