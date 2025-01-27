@@ -3,12 +3,14 @@ package com.example.uas.ui.viewmodel.hewan
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.uas.model.Hewan
 import com.example.uas.repository.HewanRepository
 import com.example.uas.ui.view.hewan.DestinasiDetailHewan
+import com.google.accompanist.systemuicontroller.SystemUiController
 import kotlinx.coroutines.launch
 
 class DetailViewModel(
@@ -19,6 +21,15 @@ class DetailViewModel(
 
     var detailUiState: DetailUiState by mutableStateOf(DetailUiState())
         private set
+
+    fun handleNavigateBack(
+        systemUiController: SystemUiController,
+        onNavigateBack: () -> Unit
+    ) {
+        systemUiController.setStatusBarColor(Color.Transparent)
+
+        onNavigateBack()
+    }
 
     init {
         getHewanById()

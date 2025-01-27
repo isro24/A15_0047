@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -22,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -42,6 +44,7 @@ import com.example.uas.ui.viewmodel.PenyediaViewModel
 import com.example.uas.ui.viewmodel.kandang.DetailUiStateKandang
 import com.example.uas.ui.viewmodel.kandang.DetailViewModelKandang
 import com.example.uas.ui.viewmodel.kandang.toKnd
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 object DestinasiDetailKandang : DestinasiNavigasi {
     override val route = "detailkandang"
@@ -62,6 +65,11 @@ fun DetailViewKandang(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     val listHewan = viewModel.listHewan
+
+    val systemUiController = rememberSystemUiController()
+    LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(Color.White)
+    }
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -167,8 +175,16 @@ fun BodyDetailKnd(
                         containerColor = Color(0xFF22B14C)
                     )
                 ) {
-                    Text(text = "Delete")
-                }
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = "Delete",
+                        modifier = Modifier.padding(end = 8.dp),
+                        tint = Color.White
+                    )
+                    Text(
+                        text = "Delete",
+                        color = Color.White
+                    )                }
             }
         }
     }

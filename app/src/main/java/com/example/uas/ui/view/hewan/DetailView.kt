@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -22,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -41,6 +43,7 @@ import com.example.uas.ui.viewmodel.PenyediaViewModel
 import com.example.uas.ui.viewmodel.hewan.DetailUiState
 import com.example.uas.ui.viewmodel.hewan.DetailViewModel
 import com.example.uas.ui.viewmodel.hewan.toHwn
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 object DestinasiDetailHewan : DestinasiNavigasi {
     override val route = "detail"
@@ -60,6 +63,11 @@ fun DetailViewHewan(
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
+    val systemUiController = rememberSystemUiController()
+    LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(Color.White)
+    }
+
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -67,7 +75,7 @@ fun DetailViewHewan(
                 title = DestinasiDetailHewan.titleRes,
                 canNavigateBack = true,
                 scrollBehavior = scrollBehavior,
-                navigateUp = NavigateBack,
+                navigateUp = { viewModel.handleNavigateBack(systemUiController, NavigateBack)},
                 onRefresh = {
                     viewModel.getHewanById()
                 }
@@ -160,8 +168,16 @@ fun BodyDetailHwn(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF22B14C))
                 ) {
-                    Text(text = "Delete")
-                }
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = "Delete",
+                        modifier = Modifier.padding(end = 8.dp),
+                        tint = Color.White
+                    )
+                    Text(
+                        text = "Delete",
+                        color = Color.White
+                    )                }
             }
         }
     }
