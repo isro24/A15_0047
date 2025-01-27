@@ -88,7 +88,7 @@ fun InsertViewKandang(
                 title  = DestinasiInsertKandang.titleRes,
                 canNavigateBack = true,
                 scrollBehavior = scrollBehavior,
-                navigateUp = navigateBack
+                navigateUp = { viewModel.handleNavigateBack(systemUiController, navigateBack)}
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }

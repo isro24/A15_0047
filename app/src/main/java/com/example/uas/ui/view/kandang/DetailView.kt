@@ -78,7 +78,7 @@ fun DetailViewKandang(
                 title = DestinasiDetailKandang.titleRes,
                 canNavigateBack = true,
                 scrollBehavior = scrollBehavior,
-                navigateUp = NavigateBack,
+                navigateUp = { viewModel.handleNavigateBack(systemUiController, NavigateBack)},
                 onRefresh = {
                     viewModel.getKandangById()
                 }

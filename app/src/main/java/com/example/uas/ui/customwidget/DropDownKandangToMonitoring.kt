@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.example.uas.R
 import com.example.uas.model.Hewan
 import com.example.uas.model.Kandang
+import com.example.uas.ui.viewmodel.monitoring.FormErrorStateMonitoring
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,7 +27,8 @@ fun DropDownKandangToMonitoring(
     selectedHewan: MutableState<String>,
     onValueChange: (String) -> Unit,
     listKandang: List<Kandang>,
-    listHewan: List<Hewan>
+    listHewan: List<Hewan>,
+    errorStateMonitoring: FormErrorStateMonitoring = FormErrorStateMonitoring()
 ){
     ExposedDropdownMenuBox(
         expanded = expanded.value,
@@ -39,6 +41,7 @@ fun DropDownKandangToMonitoring(
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth(),
+            isError = errorStateMonitoring.idKandangError!=null,
             enabled = true,
             readOnly = true,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded.value) },

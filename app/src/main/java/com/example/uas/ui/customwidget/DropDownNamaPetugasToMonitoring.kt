@@ -16,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.uas.R
 import com.example.uas.model.Petugas
+import com.example.uas.ui.viewmodel.petugas.FormErrorStatePetugas
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,7 +24,8 @@ fun DropDownNamaPetugasToMonitoring(
     expanded: MutableState<Boolean>,
     selectedNamaPetugas: MutableState<String>,
     onValueChange: (Int) -> Unit,
-    listPetugas: List<Petugas>
+    listPetugas: List<Petugas>,
+    errorStatePetugas: FormErrorStatePetugas = FormErrorStatePetugas()
 ){
     ExposedDropdownMenuBox(
         expanded = expanded.value,
@@ -36,6 +38,7 @@ fun DropDownNamaPetugasToMonitoring(
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth(),
+            isError = errorStatePetugas.namaPetugasError!=null,
             enabled = true,
             readOnly = true,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded.value) },
