@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
@@ -20,9 +22,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,10 +50,17 @@ import com.example.uas.ui.customwidget.DropDownKandangToMonitoring
 import com.example.uas.ui.customwidget.DropDownNamaPetugasToMonitoring
 import com.example.uas.ui.navigation.DestinasiNavigasi
 import com.example.uas.ui.viewmodel.PenyediaViewModel
+import com.example.uas.ui.viewmodel.hewan.FormErrorState
+import com.example.uas.ui.viewmodel.hewan.InsertUiState
+import com.example.uas.ui.viewmodel.monitoring.FormErrorStateMonitoring
 import com.example.uas.ui.viewmodel.monitoring.InsertUiEventMonitoring
 import com.example.uas.ui.viewmodel.monitoring.InsertUiStateMonitoring
 import com.example.uas.ui.viewmodel.monitoring.InsertViewModelMonitoring
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -65,8 +77,24 @@ fun InsertViewMonitoring(
     modifier: Modifier = Modifier,
     viewModel: InsertViewModelMonitoring = viewModel(factory= PenyediaViewModel.Factory)
 ){
+    val uiStateMonitoring = viewModel.uiStateMonitoring
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    val systemUiController = rememberSystemUiController()
+    LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(Color.White)
+    }
+
+    LaunchedEffect(uiStateMonitoring.snackBarMessage) {
+        uiStateMonitoring.snackBarMessage?.let { message ->
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar(message)
+                viewModel.resetSnackBarMessage()
+            }
+        }
+    }
 
     val listPetugas = viewModel.listPetugas
     val listKandang = viewModel.listKandang
@@ -79,9 +107,10 @@ fun InsertViewMonitoring(
                 title  = DestinasiInsertMonitoring.titleRes,
                 canNavigateBack = true,
                 scrollBehavior = scrollBehavior,
-                navigateUp = navigateBack
+                navigateUp = { viewModel.handleNavigateBack(systemUiController, navigateBack)}
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -89,17 +118,25 @@ fun InsertViewMonitoring(
                 .fillMaxSize()
         ) {
             EntryBodyMonitoring(
-                insertUiStateMonitoring = viewModel.uiState,
+                insertUiStateMonitoring = viewModel.uiStateMonitoring,
                 onMonitoringValueChange = viewModel::updateInsertMntState,
                 listPetugas = listPetugas,
                 listKandang = listKandang,
                 listHewan = listHewan,
                 onSaveClick = {
                     coroutineScope.launch {
-                        viewModel.insertMnt()
-                        navigateBack()
+                        if (viewModel.validateFields()){
+                            viewModel.insertMnt()
+                            delay(600)
+                            withContext(Dispatchers.Main){
+                                navigateBack()
+                            }
+                        }else{
+                            snackbarHostState.showSnackbar("Data tidak valid")
+                        }
                     }
                 },
+                uiStateMonitoring = uiStateMonitoring,
                 modifier = Modifier
                     .padding(horizontal = 30.dp, vertical = 10.dp)
                     .fillMaxWidth()
@@ -110,6 +147,7 @@ fun InsertViewMonitoring(
 
 @Composable
 fun EntryBodyMonitoring(
+    uiStateMonitoring: InsertUiStateMonitoring,
     insertUiStateMonitoring: InsertUiStateMonitoring,
     onMonitoringValueChange: (InsertUiEventMonitoring) -> Unit,
     onSaveClick: () -> Unit,
@@ -118,14 +156,18 @@ fun EntryBodyMonitoring(
     listHewan: List<Hewan>,
     modifier: Modifier = Modifier
 ){
+    val scrollState = rememberScrollState()
+
     Column (
         verticalArrangement = Arrangement.spacedBy(18.dp),
         modifier = modifier.padding(12.dp)
+            .verticalScroll(scrollState)
     ){
         FormInput(
             insertUiEventMonitoring = insertUiStateMonitoring.insertUiEventMonitoring,
             onValueChange = onMonitoringValueChange,
             modifier = Modifier.fillMaxWidth(),
+            errorStateMonitoring = uiStateMonitoring.isEntryValidMonitoring,
             listPetugas = listPetugas,
             listKandang = listKandang,
             listHewan = listHewan
@@ -149,6 +191,7 @@ fun FormInput(
     modifier: Modifier = Modifier,
     onValueChange: (InsertUiEventMonitoring) -> Unit = {},
     enabled: Boolean = true,
+    errorStateMonitoring: FormErrorStateMonitoring = FormErrorStateMonitoring(),
     listPetugas: List<Petugas> = emptyList(),
     listKandang: List<Kandang> = emptyList(),
     listHewan: List<Hewan> = emptyList(),
@@ -164,19 +207,23 @@ fun FormInput(
 
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
 
-        var expanded by remember { mutableStateOf(false) }
-        var selectedNamaPetugas by remember { mutableStateOf("") }
-        var selectedKandang by remember { mutableStateOf("") }
-        var selectedHewan by remember { mutableStateOf("") }
+        val expanded by remember { mutableStateOf(false) }
+        val selectedNamaPetugas by remember { mutableStateOf("") }
+        val selectedKandang by remember { mutableStateOf("") }
+        val selectedHewan by remember { mutableStateOf("") }
 
         DropDownNamaPetugasToMonitoring(
             expanded = remember { mutableStateOf(expanded) },
             selectedNamaPetugas = remember { mutableStateOf(selectedNamaPetugas) },
             onValueChange = { idPetugas -> onValueChange(insertUiEventMonitoring.copy(idPetugas = idPetugas))},
             listPetugas = listPetugas.filter { it.jabatan == "Dokter Hewan" }
+        )
+        Text(
+            text = errorStateMonitoring.idPetugasError ?: "",
+            color = Color.Red
         )
 
         DropDownKandangToMonitoring(
@@ -187,6 +234,10 @@ fun FormInput(
             listKandang = listKandang,
             listHewan = listHewan
         )
+        Text(
+            text = errorStateMonitoring.idKandangError ?: "",
+            color = Color.Red
+        )
 
         OutlinedTextField(
             value = selectedDate,
@@ -195,6 +246,7 @@ fun FormInput(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable { showDatePicker = true },
+            isError = errorStateMonitoring.tanggalMonitoringError!=null,
             enabled = false,
             singleLine = true,
             leadingIcon = {
@@ -203,6 +255,10 @@ fun FormInput(
                     contentDescription = "Tanggal Monitoring"
                 )
             }
+        )
+        Text(
+            text = errorStateMonitoring.tanggalMonitoringError ?: "",
+            color = Color.Red
         )
 
         if (showDatePicker) {
@@ -228,6 +284,7 @@ fun FormInput(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable { showTimePicker = true },
+            isError = errorStateMonitoring.tanggalMonitoringError!=null,
             enabled = false,
             singleLine = true,
             leadingIcon = {
@@ -237,6 +294,10 @@ fun FormInput(
                     modifier = Modifier.size(30.dp)
                 )
             }
+        )
+        Text(
+            text = errorStateMonitoring.tanggalMonitoringError ?: "",
+            color = Color.Red
         )
 
         if (showTimePicker) {
@@ -269,6 +330,7 @@ fun FormInput(
             },
             label = { Text(text = "Hewan Sakit") },
             modifier = Modifier.fillMaxWidth(),
+            isError = errorStateMonitoring.hewanSakitError!=null,
             enabled = enabled,
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -280,6 +342,10 @@ fun FormInput(
                 )
             }
         )
+        Text(
+            text = errorStateMonitoring.hewanSakitError ?: "",
+            color = Color.Red
+        )
         OutlinedTextField(
             value = insertUiEventMonitoring.hewanSehat?.toString() ?: "",
             onValueChange = {
@@ -288,6 +354,7 @@ fun FormInput(
             },
             label = { Text(text = "Hewan Sehat") },
             modifier = Modifier.fillMaxWidth(),
+            isError = errorStateMonitoring.hewanSehatError!=null,
             enabled = enabled,
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -298,6 +365,10 @@ fun FormInput(
                     modifier = Modifier.size(30.dp)
                 )
             }
+        )
+        Text(
+            text = errorStateMonitoring.hewanSehatError ?: "",
+            color = Color.Red
         )
         Text(
             text = "Status: ${insertUiEventMonitoring.status}",
