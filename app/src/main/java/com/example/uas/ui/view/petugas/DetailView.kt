@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -42,6 +43,7 @@ import com.example.uas.ui.viewmodel.PenyediaViewModel
 import com.example.uas.ui.viewmodel.petugas.DetailUiStatePetugas
 import com.example.uas.ui.viewmodel.petugas.DetailViewModelPetugas
 import com.example.uas.ui.viewmodel.petugas.toPtg
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 object DestinasiDetailPetugas : DestinasiNavigasi {
     override val route = "detailpetugas"
@@ -61,6 +63,11 @@ fun DetailViewPetugas(
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
+    val systemUiController = rememberSystemUiController()
+    LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(Color.White)
+    }
+
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -68,7 +75,7 @@ fun DetailViewPetugas(
                 title = DestinasiDetailPetugas.titleRes,
                 canNavigateBack = true,
                 scrollBehavior = scrollBehavior,
-                navigateUp = NavigateBack,
+                navigateUp = { viewModel.handleNavigateBack(systemUiController, NavigateBack)},
                 onRefresh = {
                     viewModel.getPetugasById()
                 }

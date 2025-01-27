@@ -16,9 +16,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,10 +39,15 @@ import com.example.uas.R
 import com.example.uas.ui.customwidget.CustomeTopAppBar
 import com.example.uas.ui.navigation.DestinasiNavigasi
 import com.example.uas.ui.viewmodel.PenyediaViewModel
+import com.example.uas.ui.viewmodel.petugas.FormErrorStatePetugas
 import com.example.uas.ui.viewmodel.petugas.InsertUiEventPetugas
 import com.example.uas.ui.viewmodel.petugas.InsertUiStatePetugas
 import com.example.uas.ui.viewmodel.petugas.InsertViewModelPetugas
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 object DestinasiInsertPetugas: DestinasiNavigasi {
     override val route = "item_entrypetugas"
@@ -53,8 +61,25 @@ fun InsertViewPetugas(
     modifier: Modifier = Modifier,
     viewModel: InsertViewModelPetugas = viewModel(factory= PenyediaViewModel.Factory)
 ){
+    val uiStatePetugas = viewModel.uiStatePetugas
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    val systemUiController = rememberSystemUiController()
+    LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(Color.White)
+    }
+
+    LaunchedEffect(uiStatePetugas.snackBarMessage) {
+        uiStatePetugas.snackBarMessage?.let { message ->
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar(message)
+                viewModel.resetSnackBarMessage()
+            }
+        }
+    }
+
     Scaffold (
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -62,9 +87,10 @@ fun InsertViewPetugas(
                 title  = DestinasiInsertPetugas.titleRes,
                 canNavigateBack = true,
                 scrollBehavior = scrollBehavior,
-                navigateUp = navigateBack
+                navigateUp = { viewModel.handleNavigateBack(systemUiController, navigateBack)}
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -72,14 +98,22 @@ fun InsertViewPetugas(
                 .fillMaxSize()
         ) {
             EntryBodyPetugas(
-                insertUiStatePetugas = viewModel.uiState,
+                insertUiStatePetugas = viewModel.uiStatePetugas,
                 onPetugasValueChange = viewModel::updateInsertPtgState,
                 onSaveClick = {
                     coroutineScope.launch {
-                        viewModel.insertPtg()
-                        navigateBack()
+                        if (viewModel.validateFields()){
+                            viewModel.insertPtg()
+                            delay(600)
+                            withContext(Dispatchers.Main){
+                                navigateBack()
+                            }
+                        }else{
+                            snackbarHostState.showSnackbar("Data tidak valid")
+                        }
                     }
                 },
+                uiStatePetugas = uiStatePetugas,
                 modifier = Modifier
                     .padding(horizontal = 30.dp, vertical = 10.dp)
                     .fillMaxWidth()
@@ -90,6 +124,7 @@ fun InsertViewPetugas(
 
 @Composable
 fun EntryBodyPetugas(
+    uiStatePetugas: InsertUiStatePetugas,
     insertUiStatePetugas: InsertUiStatePetugas,
     onPetugasValueChange: (InsertUiEventPetugas) -> Unit,
     onSaveClick: () -> Unit,
@@ -102,7 +137,8 @@ fun EntryBodyPetugas(
         FormInput(
             insertUiEventPetugas = insertUiStatePetugas.insertUiEventPetugas,
             onValueChange = onPetugasValueChange,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            errorStatePetugas = uiStatePetugas.isEntryValidPetugas
         )
         Button(
             onClick = onSaveClick,
@@ -122,6 +158,7 @@ fun FormInput(
     insertUiEventPetugas: InsertUiEventPetugas,
     modifier: Modifier = Modifier,
     onValueChange: (InsertUiEventPetugas) -> Unit = {},
+    errorStatePetugas: FormErrorStatePetugas = FormErrorStatePetugas(),
     enabled: Boolean = true
 ){
     val jabatanList = listOf("Keeper", "Dokter Hewan", "Kurator")
@@ -129,13 +166,14 @@ fun FormInput(
 
     Column (
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        verticalArrangement = Arrangement.spacedBy(5.dp)
     ){
         OutlinedTextField(
             value = insertUiEventPetugas.namaPetugas,
             onValueChange = {onValueChange(insertUiEventPetugas.copy(namaPetugas = it))},
             label = { Text(text = "Nama Petugas") },
             modifier = Modifier.fillMaxWidth(),
+            isError = errorStatePetugas.namaPetugasError!=null,
             enabled = enabled,
             singleLine = true,
             leadingIcon = {
@@ -146,6 +184,10 @@ fun FormInput(
                 )
             }
         )
+        Text(
+            text = errorStatePetugas.namaPetugasError ?: "",
+            color = Color.Red
+        )
         Text(text = "Jabatan", fontWeight = FontWeight.Bold)
 
         jabatanList.forEach { jabatan ->
@@ -153,28 +195,31 @@ fun FormInput(
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 RadioButton(
                     selected = pilihanJabatan == jabatan,
                     onClick = {
                         pilihanJabatan = jabatan
                         onValueChange(insertUiEventPetugas.copy(jabatan = jabatan))
-                    }
+                    },
                 )
                 Text(
                     text = jabatan,
                     style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp),
                 )
             }
         }
-
+        Text(
+            text = errorStatePetugas.jabatanError ?: "",
+            color = Color.Red
+        )
 
         if (enabled){
             Text(
                 text = "Isi Semua Data!",
-                modifier = Modifier.padding(12.dp)
+                modifier = Modifier.padding(5.dp)
             )
         }
     }
