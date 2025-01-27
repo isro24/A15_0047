@@ -15,14 +15,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -33,13 +35,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uas.R
 import com.example.uas.model.Hewan
 import com.example.uas.ui.customwidget.CustomeTopAppBar
-import com.example.uas.ui.customwidget.DropdownNamaHewan
+import com.example.uas.ui.customwidget.DropdownNamaHewanToKandang
 import com.example.uas.ui.navigation.DestinasiNavigasi
 import com.example.uas.ui.viewmodel.PenyediaViewModel
+import com.example.uas.ui.viewmodel.kandang.FormErrorStateKandang
 import com.example.uas.ui.viewmodel.kandang.InsertUiEventKandang
 import com.example.uas.ui.viewmodel.kandang.InsertUiStateKandang
 import com.example.uas.ui.viewmodel.kandang.InsertViewModelKandang
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 object DestinasiInsertKandang: DestinasiNavigasi {
     override val route = "item_entrykandang"
@@ -53,10 +60,26 @@ fun InsertViewKandang(
     modifier: Modifier = Modifier,
     viewModel: InsertViewModelKandang = viewModel(factory= PenyediaViewModel.Factory)
 ){
+    val uiStateKandang = viewModel.uiStateKandang
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     val listHewan = viewModel.listHewan
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    val systemUiController = rememberSystemUiController()
+    LaunchedEffect(Unit) {
+        systemUiController.setStatusBarColor(Color.White)
+    }
+
+    LaunchedEffect(uiStateKandang.snackBarMessage) {
+        uiStateKandang.snackBarMessage?.let { message ->
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar(message)
+                viewModel.resetSnackBarMessage()
+            }
+        }
+    }
 
     Scaffold (
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -67,7 +90,8 @@ fun InsertViewKandang(
                 scrollBehavior = scrollBehavior,
                 navigateUp = navigateBack
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -75,15 +99,23 @@ fun InsertViewKandang(
                 .fillMaxSize()
         ) {
             EntryBodyKandang(
-                insertUiStateKandang = viewModel.uiState,
+                insertUiStateKandang = viewModel.uiStateKandang,
                 onKandangValueChange = viewModel::updateInsertKndState,
                 listHewan = listHewan,
                 onSaveClick = {
                     coroutineScope.launch {
-                        viewModel.insertKnd()
-                        navigateBack()
+                        if (viewModel.validateFields()){
+                            viewModel.insertKnd()
+                            delay(600)
+                            withContext(Dispatchers.Main){
+                                navigateBack()
+                            }
+                        }else{
+                            snackbarHostState.showSnackbar("Data tidak valid")
+                        }
                     }
                 },
+                uiStateKandang = uiStateKandang,
                 modifier = Modifier
                     .padding(horizontal = 30.dp, vertical = 10.dp)
                     .fillMaxWidth()
@@ -94,6 +126,7 @@ fun InsertViewKandang(
 
 @Composable
 fun EntryBodyKandang(
+    uiStateKandang: InsertUiStateKandang,
     insertUiStateKandang: InsertUiStateKandang,
     onKandangValueChange: (InsertUiEventKandang) -> Unit,
     onSaveClick: () -> Unit,
@@ -108,7 +141,8 @@ fun EntryBodyKandang(
             insertUiEventKandang = insertUiStateKandang.insertUiEventKandang,
             onValueChange = onKandangValueChange,
             modifier = Modifier.fillMaxWidth(),
-            listHewan = listHewan
+            listHewan = listHewan,
+            errorState = uiStateKandang.isEntryValidKandang
         )
         Button(
             onClick = onSaveClick,
@@ -127,23 +161,25 @@ fun EntryBodyKandang(
 fun FormInput(
     insertUiEventKandang: InsertUiEventKandang,
     modifier: Modifier = Modifier,
+    errorState: FormErrorStateKandang = FormErrorStateKandang(),
     onValueChange: (InsertUiEventKandang) -> Unit = {},
     enabled: Boolean = true,
     listHewan: List<Hewan> = emptyList()
 ){
     Column (
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(5.dp)
     ){
 
-        var expanded by remember { mutableStateOf(false) }
-        var selectedNamaHewan by remember { mutableStateOf("") }
+        val expanded by remember { mutableStateOf(false) }
+        val selectedNamaHewan by remember { mutableStateOf("") }
 
         OutlinedTextField(
             value = insertUiEventKandang.idKandang,
             onValueChange = {onValueChange(insertUiEventKandang.copy(idKandang = it))},
             label = { Text(text = "Id Kandang") },
             modifier = Modifier.fillMaxWidth(),
+            isError = errorState.idKandangError!=null,
             enabled = enabled,
             singleLine = true,
             leadingIcon = {
@@ -154,11 +190,19 @@ fun FormInput(
                 )
             }
         )
-        DropdownNamaHewan(
+        Text(
+            text = errorState.idKandangError ?: "",
+            color = Color.Red
+        )
+        DropdownNamaHewanToKandang(
             expanded = remember { mutableStateOf(expanded) },
             selectedNamaHewan = remember { mutableStateOf(selectedNamaHewan) },
             onValueChange = { idHewan -> onValueChange(insertUiEventKandang.copy(idHewan = idHewan))},
             listHewan = listHewan
+        )
+        Text(
+            text = errorState.idHewanError ?: "",
+            color = Color.Red
         )
         OutlinedTextField(
             value = insertUiEventKandang.kapasitas?.toString()?: "",
@@ -167,6 +211,7 @@ fun FormInput(
                 onValueChange(insertUiEventKandang.copy(kapasitas = intValue))},
             label = { Text(text = "Kapasitas") },
             modifier = Modifier.fillMaxWidth(),
+            isError = errorState.kapasitasError!=null,
             enabled = enabled,
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -178,11 +223,16 @@ fun FormInput(
                 )
             }
         )
+        Text(
+            text = errorState.kapasitasError ?: "",
+            color = Color.Red
+        )
         OutlinedTextField(
             value = insertUiEventKandang.lokasi,
             onValueChange = {onValueChange(insertUiEventKandang.copy(lokasi = it))},
             label = { Text(text = "Lokasi") },
             modifier = Modifier.fillMaxWidth(),
+            isError = errorState.lokasiError!=null,
             enabled = enabled,
             singleLine = true,
             leadingIcon = {
@@ -192,6 +242,10 @@ fun FormInput(
                     modifier = Modifier.size(30.dp)
                 )
             }
+        )
+        Text(
+            text = errorState.lokasiError ?: "",
+            color = Color.Red
         )
         if (enabled){
             Text(
