@@ -3,12 +3,14 @@ package com.example.uas.ui.viewmodel.petugas
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.uas.model.Petugas
 import com.example.uas.repository.PetugasRepository
 import com.example.uas.ui.view.petugas.DestinasiDetailPetugas
+import com.google.accompanist.systemuicontroller.SystemUiController
 import kotlinx.coroutines.launch
 
 class DetailViewModelPetugas(
@@ -19,6 +21,15 @@ class DetailViewModelPetugas(
 
     var detailUiStatePetugas: DetailUiStatePetugas by mutableStateOf(DetailUiStatePetugas())
         private set
+
+    fun handleNavigateBack(
+        systemUiController: SystemUiController,
+        onNavigateBack: () -> Unit
+    ) {
+        systemUiController.setStatusBarColor(Color.Transparent)
+
+        onNavigateBack()
+    }
 
     init {
         getPetugasById()
