@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.uas.model.Hewan
 import com.example.uas.repository.KandangRepository
 import com.example.uas.ui.view.kandang.DestinasiUpdateKandang
 import com.google.accompanist.systemuicontroller.SystemUiController
@@ -19,6 +20,9 @@ class UpdateViewModelKandang(
 ) : ViewModel() {
 
     var updateUIStateKandang by mutableStateOf(InsertUiStateKandang())
+        private set
+
+    var listHewan by mutableStateOf<List<Hewan>>(emptyList())
         private set
 
     fun handleNavigateBack(
@@ -44,6 +48,20 @@ class UpdateViewModelKandang(
             updateUIStateKandang = kandangRepository.getKandangById(_idKandang)
                 .data
                 .toUiStateKnd()
+        }
+        fetchHewan()
+    }
+
+    private fun fetchHewan() {
+        viewModelScope.launch {
+            try {
+                val response = kandangRepository.getHewan()
+                if (response.status) {
+                    listHewan = response.data
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

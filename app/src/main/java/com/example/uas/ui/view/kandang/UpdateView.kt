@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.uas.model.Hewan
 import com.example.uas.ui.customwidget.CustomeTopAppBar
 import com.example.uas.ui.navigation.DestinasiNavigasi
 import com.example.uas.ui.viewmodel.PenyediaViewModel
@@ -39,12 +38,13 @@ fun UpdateViewKandang(
     NavigateBack: () -> Unit,
     onNavigate:()-> Unit,
     modifier: Modifier = Modifier,
-    listHewan: List<Hewan> = emptyList(),
     viewModel: UpdateViewModelKandang = viewModel(factory = PenyediaViewModel.Factory)
 ){
     val coroutineScope = rememberCoroutineScope()
     val uiStateKandang = viewModel.updateUIStateKandang
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val listHewan = viewModel.listHewan
 
     val systemUiController = rememberSystemUiController()
     LaunchedEffect(Unit) {
