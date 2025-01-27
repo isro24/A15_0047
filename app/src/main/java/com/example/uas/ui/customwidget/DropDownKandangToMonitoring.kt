@@ -20,7 +20,7 @@ import com.example.uas.model.Kandang
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropDownKandang(
+fun DropDownKandangToMonitoring(
     expanded: MutableState<Boolean>,
     selectedKandang: MutableState<String>,
     selectedHewan: MutableState<String>,

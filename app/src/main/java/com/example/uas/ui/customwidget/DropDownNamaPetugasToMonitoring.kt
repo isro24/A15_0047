@@ -2,7 +2,6 @@ package com.example.uas.ui.customwidget
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -16,24 +15,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.uas.R
-import com.example.uas.model.Hewan
+import com.example.uas.model.Petugas
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropdownNamaHewan(
+fun DropDownNamaPetugasToMonitoring(
     expanded: MutableState<Boolean>,
-    selectedNamaHewan: MutableState<String>,
+    selectedNamaPetugas: MutableState<String>,
     onValueChange: (Int) -> Unit,
-    listHewan: List<Hewan>
-) {
+    listPetugas: List<Petugas>
+){
     ExposedDropdownMenuBox(
         expanded = expanded.value,
         onExpandedChange = { expanded.value = !expanded.value }
     ) {
         OutlinedTextField(
-            value = selectedNamaHewan.value,
+            value = selectedNamaPetugas.value,
             onValueChange = {},
-            label = { Text("Nama Hewan") },
+            label = { Text("Nama Petugas") },
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth(),
@@ -42,30 +41,30 @@ fun DropdownNamaHewan(
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded.value) },
             leadingIcon = {
                 Icon(
-                    painter = painterResource(id = R.drawable.lionicon),
-                    contentDescription = "Nama Hewan",
+                    painter = painterResource(id = R.drawable.officericon),
+                    contentDescription = "Nama Petugas",
                     modifier = Modifier.size(30.dp)
                 )
             }
         )
         ExposedDropdownMenu(
             expanded = expanded.value,
-            onDismissRequest = { expanded.value = false }
+            onDismissRequest = { expanded.value = false },
         ) {
-            if (listHewan.isNotEmpty()) {
-                listHewan.forEach { hewan ->
+            if (listPetugas.isNotEmpty()) {
+                listPetugas.forEach { petugas ->
                     DropdownMenuItem(
-                        text = { Text(hewan.namaHewan) },
+                        text = { Text(petugas.namaPetugas) },
                         onClick = {
-                            selectedNamaHewan.value = hewan.namaHewan
-                            onValueChange(hewan.idHewan)
+                            selectedNamaPetugas.value = petugas.namaPetugas
+                            onValueChange(petugas.idPetugas)
                             expanded.value = false
                         }
                     )
                 }
             } else {
                 DropdownMenuItem(
-                    text = { Text("Tidak ada data hewan") },
+                    text = { Text("Tidak ada data Petugas") },
                     onClick = {}
                 )
             }

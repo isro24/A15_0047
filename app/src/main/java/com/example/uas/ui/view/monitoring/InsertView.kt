@@ -41,8 +41,8 @@ import com.example.uas.model.Hewan
 import com.example.uas.model.Kandang
 import com.example.uas.model.Petugas
 import com.example.uas.ui.customwidget.CustomeTopAppBar
-import com.example.uas.ui.customwidget.DropDownKandang
-import com.example.uas.ui.customwidget.DropDownNamaPetugas
+import com.example.uas.ui.customwidget.DropDownKandangToMonitoring
+import com.example.uas.ui.customwidget.DropDownNamaPetugasToMonitoring
 import com.example.uas.ui.navigation.DestinasiNavigasi
 import com.example.uas.ui.viewmodel.PenyediaViewModel
 import com.example.uas.ui.viewmodel.monitoring.InsertUiEventMonitoring
@@ -172,14 +172,14 @@ fun FormInput(
         var selectedKandang by remember { mutableStateOf("") }
         var selectedHewan by remember { mutableStateOf("") }
 
-        DropDownNamaPetugas(
+        DropDownNamaPetugasToMonitoring(
             expanded = remember { mutableStateOf(expanded) },
             selectedNamaPetugas = remember { mutableStateOf(selectedNamaPetugas) },
             onValueChange = { idPetugas -> onValueChange(insertUiEventMonitoring.copy(idPetugas = idPetugas))},
             listPetugas = listPetugas.filter { it.jabatan == "Dokter Hewan" }
         )
 
-        DropDownKandang(
+        DropDownKandangToMonitoring(
             expanded = remember { mutableStateOf(expanded) },
             selectedKandang = remember { mutableStateOf(selectedKandang) },
             selectedHewan = remember { mutableStateOf(selectedHewan) },

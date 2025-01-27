@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.uas.R
+import com.example.uas.ui.viewmodel.hewan.FormErrorState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,7 +28,8 @@ fun DropDownTipePakan(
     options: List<String>,
     label: String,
     onValueChangedEvent: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    errorState: FormErrorState = FormErrorState()
 ){
     var expended by remember {
         mutableStateOf(false)
@@ -36,7 +38,7 @@ fun DropDownTipePakan(
     ExposedDropdownMenuBox(
         expanded = expended,
         onExpandedChange = { expended = !expended },
-        modifier = Modifier
+        modifier = Modifier,
     )
     {
         OutlinedTextField(
@@ -51,6 +53,7 @@ fun DropDownTipePakan(
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth(),
+            isError = errorState.tipePakanError!=null,
             leadingIcon = {
                 Icon(
                     painter = painterResource(id = R.drawable.tipepakan),

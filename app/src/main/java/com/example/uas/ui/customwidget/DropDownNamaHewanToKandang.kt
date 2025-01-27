@@ -15,56 +15,59 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.uas.R
-import com.example.uas.model.Petugas
+import com.example.uas.model.Hewan
+import com.example.uas.ui.viewmodel.hewan.FormErrorState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropDownNamaPetugas(
+fun DropdownNamaHewanToKandang(
     expanded: MutableState<Boolean>,
-    selectedNamaPetugas: MutableState<String>,
+    selectedNamaHewan: MutableState<String>,
     onValueChange: (Int) -> Unit,
-    listPetugas: List<Petugas>
-){
+    listHewan: List<Hewan>,
+    errorState: FormErrorState = FormErrorState()
+) {
     ExposedDropdownMenuBox(
         expanded = expanded.value,
         onExpandedChange = { expanded.value = !expanded.value }
     ) {
         OutlinedTextField(
-            value = selectedNamaPetugas.value,
+            value = selectedNamaHewan.value,
             onValueChange = {},
-            label = { Text("Nama Petugas") },
+            label = { Text("Nama Hewan") },
             modifier = Modifier
                 .menuAnchor()
                 .fillMaxWidth(),
+            isError = errorState.namaHewanError!=null,
             enabled = true,
             readOnly = true,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded.value) },
             leadingIcon = {
                 Icon(
-                    painter = painterResource(id = R.drawable.officericon),
-                    contentDescription = "Nama Petugas",
+                    painter = painterResource(id = R.drawable.lionicon),
+                    contentDescription = "Nama Hewan",
                     modifier = Modifier.size(30.dp)
                 )
             }
         )
         ExposedDropdownMenu(
             expanded = expanded.value,
-            onDismissRequest = { expanded.value = false },
+            onDismissRequest = { expanded.value = false }
         ) {
-            if (listPetugas.isNotEmpty()) {
-                listPetugas.forEach { petugas ->
+            if (listHewan.isNotEmpty()) {
+                listHewan.forEach { hewan ->
                     DropdownMenuItem(
-                        text = { Text(petugas.namaPetugas) },
+                        text = { Text(hewan.namaHewan) },
                         onClick = {
-                            selectedNamaPetugas.value = petugas.namaPetugas
-                            onValueChange(petugas.idPetugas)
+                            selectedNamaHewan.value = hewan.namaHewan
+                            onValueChange(hewan.idHewan)
                             expanded.value = false
                         }
                     )
                 }
             } else {
                 DropdownMenuItem(
-                    text = { Text("Tidak ada data Petugas") },
+                    text = { Text("Tidak ada data hewan") },
                     onClick = {}
                 )
             }
