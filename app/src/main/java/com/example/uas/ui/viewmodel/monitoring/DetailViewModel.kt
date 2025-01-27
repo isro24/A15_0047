@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,6 +14,7 @@ import com.example.uas.model.Monitoring
 import com.example.uas.model.Petugas
 import com.example.uas.repository.MonitoringRepository
 import com.example.uas.ui.view.monitoring.DestinasiDetailMonitoring
+import com.google.accompanist.systemuicontroller.SystemUiController
 import kotlinx.coroutines.launch
 
 class DetailViewModelMonitoring(
@@ -23,6 +25,15 @@ class DetailViewModelMonitoring(
 
     var detailUiStateMonitoring: DetailUiStateMonitoring by mutableStateOf(DetailUiStateMonitoring())
         private set
+
+    fun handleNavigateBack(
+        systemUiController: SystemUiController,
+        onNavigateBack: () -> Unit
+    ) {
+        systemUiController.setStatusBarColor(Color.Transparent)
+
+        onNavigateBack()
+    }
 
     init {
         getMonitoringById()
