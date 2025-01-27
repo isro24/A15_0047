@@ -81,4 +81,7 @@ dependencies {
 
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
+
+    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
+
 }
