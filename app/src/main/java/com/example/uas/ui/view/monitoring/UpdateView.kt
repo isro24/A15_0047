@@ -42,13 +42,15 @@ fun UpdateViewMonitoring(
     onNavigate:()-> Unit,
     modifier: Modifier = Modifier,
     viewModel: UpdateViewModelMonitoring = viewModel(factory = PenyediaViewModel.Factory),
-    listPetugas: List<Petugas> = emptyList(),
-    listKandang: List<Kandang> = emptyList(),
-    listHewan: List<Hewan> = emptyList(),
 ){
     val coroutineScope = rememberCoroutineScope()
     val uiStateMonitoring = viewModel.updateUIStateMonitoring
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val listHewan = viewModel.listHewan
+    val listPetugas = viewModel.listPetugas
+    val listKandang = viewModel.listKandang
+
 
     val systemUiController = rememberSystemUiController()
     LaunchedEffect(Unit) {
