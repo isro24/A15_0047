@@ -18,13 +18,6 @@ class InsertViewModelKandang(private val knd: KandangRepository): ViewModel(){
     var uiStateKandang by mutableStateOf(InsertUiStateKandang())
         private set
 
-    var listHewan by mutableStateOf<List<Hewan>>(emptyList())
-        private set
-
-    init {
-        fetchHewan()
-    }
-
     fun handleNavigateBack(
         systemUiController: SystemUiController,
         onNavigateBack: () -> Unit
@@ -69,19 +62,6 @@ class InsertViewModelKandang(private val knd: KandangRepository): ViewModel(){
         }
     }
 
-    private fun fetchHewan() {
-        viewModelScope.launch {
-            try {
-                val response = knd.getHewan()
-                if (response.status) {
-                    listHewan = response.data
-                    Log.d("FetchHewan", "Data Hewan: $listHewan")
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
 
     fun resetSnackBarMessage() {
         uiStateKandang = uiStateKandang.copy(snackBarMessage = null)

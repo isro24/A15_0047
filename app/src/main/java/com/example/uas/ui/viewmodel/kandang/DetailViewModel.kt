@@ -24,9 +24,6 @@ class DetailViewModelKandang(
     var detailUiStateKandang: DetailUiStateKandang by mutableStateOf(DetailUiStateKandang())
         private set
 
-    var listHewan by mutableStateOf<List<Hewan>>(emptyList())
-        private set
-
     fun handleNavigateBack(
         systemUiController: SystemUiController,
         onNavigateBack: () -> Unit
@@ -39,22 +36,8 @@ class DetailViewModelKandang(
 
     init {
         getKandangById()
-        fetchHewan()
     }
 
-    private fun fetchHewan() {
-        viewModelScope.launch {
-            try {
-                val response = kandangRepository.getHewan()
-                if (response.status) {
-                    listHewan = response.data
-                    Log.d("FetchHewan", "Data Hewan: $listHewan")
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
 
     fun getKandangById() {
         viewModelScope.launch {

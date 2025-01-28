@@ -22,9 +22,6 @@ class UpdateViewModelKandang(
     var updateUIStateKandang by mutableStateOf(InsertUiStateKandang())
         private set
 
-    var listHewan by mutableStateOf<List<Hewan>>(emptyList())
-        private set
-
     fun handleNavigateBack(
         systemUiController: SystemUiController,
         onNavigateBack: () -> Unit
@@ -49,21 +46,8 @@ class UpdateViewModelKandang(
                 .data
                 .toUiStateKnd()
         }
-        fetchHewan()
     }
 
-    private fun fetchHewan() {
-        viewModelScope.launch {
-            try {
-                val response = kandangRepository.getHewan()
-                if (response.status) {
-                    listHewan = response.data
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
 
     fun updateInsertKndState(insertUiEventKandang: InsertUiEventKandang){
         updateUIStateKandang = InsertUiStateKandang(insertUiEventKandang = insertUiEventKandang)

@@ -18,8 +18,6 @@ interface KandangRepository{
 
     suspend fun getKandangById(idKandang: String): KandangDetailResponse
 
-    suspend fun getHewan(): AllHewanResponse
-
 }
 
 class NetworkKandangRepository(
@@ -50,9 +48,6 @@ class NetworkKandangRepository(
 
     override suspend fun getKandang(): AllKandangResponse =
         kandangApiService.getAllKandang()
-
-    override suspend fun getHewan(): AllHewanResponse =
-        kandangApiService.getAllHewan()
 
     override suspend fun getKandangById(idKandang: String): KandangDetailResponse {
         return kandangApiService.getKandangById(idKandang)
