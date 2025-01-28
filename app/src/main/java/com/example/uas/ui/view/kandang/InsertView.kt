@@ -112,6 +112,7 @@ fun InsertViewKandang(
                             withContext(Dispatchers.Main){
                                 navigateBack()
                             }
+                            systemUiController.setStatusBarColor(Color.Transparent)
                         }else{
                             snackbarHostState.showSnackbar("Data tidak valid")
                         }

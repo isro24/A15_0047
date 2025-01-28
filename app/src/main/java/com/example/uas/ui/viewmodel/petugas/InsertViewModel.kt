@@ -44,7 +44,7 @@ class InsertViewModelPetugas(private val ptg: PetugasRepository): ViewModel(){
                 try {
                     ptg.insertPetugas(uiStatePetugas.insertUiEventPetugas.toPtg())
                     uiStatePetugas = InsertUiStatePetugas(
-                        snackBarMessage = "Data Hewan berhasil ditambahkan",
+                        snackBarMessage = "Data Petugas berhasil ditambahkan",
                         insertUiEventPetugas = InsertUiEventPetugas(),
                         isEntryValidPetugas = FormErrorStatePetugas()
                     )

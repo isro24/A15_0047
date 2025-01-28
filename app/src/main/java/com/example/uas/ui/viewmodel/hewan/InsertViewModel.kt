@@ -47,7 +47,7 @@ class InsertViewModel(private val hwn: HewanRepository): ViewModel(){
                     )
                 }catch (e:Exception){
                     uiState = uiState.copy(
-                        snackBarMessage = "Data gagal disimpan"
+                        snackBarMessage = "Data Hewan gagal disimpan"
                     )
                 }
             }

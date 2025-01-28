@@ -48,7 +48,7 @@ class InsertViewModelKandang(private val knd: KandangRepository): ViewModel(){
                     )
                 }catch (e:Exception){
                     uiStateKandang = uiStateKandang.copy(
-                        snackBarMessage = "Data gagal disimpan"
+                        snackBarMessage = "Data Kandang gagal disimpan"
                     )
                 }
             }
