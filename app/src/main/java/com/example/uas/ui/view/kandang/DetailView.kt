@@ -117,6 +117,7 @@ fun DetailViewKandang(
             DeleteConfirmationDialog(
                 onDeleteConfirm = {
                     viewModel.deleteKnd()
+                    systemUiController.setStatusBarColor(Color.Transparent)
                     onDeleteClick()
                     deleteConfirmationRequired = false
                 },

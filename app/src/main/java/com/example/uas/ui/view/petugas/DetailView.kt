@@ -111,6 +111,7 @@ fun DetailViewPetugas(
             DeleteConfirmationDialog(
                 onDeleteConfirm = {
                     viewModel.deletePtg()
+                    systemUiController.setStatusBarColor(Color.Transparent)
                     onDeleteClick()
                     deleteConfirmationRequired = false
                 },

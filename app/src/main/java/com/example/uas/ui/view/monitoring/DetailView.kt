@@ -127,6 +127,7 @@ fun DetailViewMonitoring(
                 onDeleteConfirm = {
                     viewModel.deleteMnt()
                     onDeleteClick()
+                    systemUiController.setStatusBarColor(Color.Transparent)
                     deleteConfirmationRequired = false
                 },
                 onDeleteCancel = {

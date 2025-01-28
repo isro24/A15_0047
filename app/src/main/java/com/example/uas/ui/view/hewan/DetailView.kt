@@ -111,6 +111,7 @@ fun DetailViewHewan(
             DeleteConfirmationDialog(
                 onDeleteConfirm = {
                     viewModel.deleteHwn()
+                    systemUiController.setStatusBarColor(Color.Transparent)
                     onDeleteClick()
                     deleteConfirmationRequired = false
                 },
