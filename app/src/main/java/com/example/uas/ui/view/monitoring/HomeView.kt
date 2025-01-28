@@ -273,15 +273,23 @@ fun MntCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(5.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = simpleDateTimeFormat,
-                style = MaterialTheme.typography.titleMedium
-            )
-
+            Column (
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ){
+                Text(
+                    text = monitoring.idKandang,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = simpleDateTimeFormat,
+                    style = MaterialTheme.typography.titleSmall
+                )
+            }
             IconButton(
                 onClick = { onDetailClick(monitoring) },
                 modifier = Modifier.size(35.dp)
