@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil.network.HttpException
 import com.example.uas.model.Hewan
 import com.example.uas.model.Monitoring
 import com.example.uas.repository.HewanRepository
@@ -33,7 +34,7 @@ class HomeViewModelMonitoring(private val mnt : MonitoringRepository) : ViewMode
                 HomeUiStateMonitoring.Success(mnt.getMonitoring().data)
             } catch (e: IOException) {
                 HomeUiStateMonitoring.Error
-            } catch (e: IOException) {
+            } catch (e: HttpException) {
                 HomeUiStateMonitoring.Error
             }
         }

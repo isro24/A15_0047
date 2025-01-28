@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil.network.HttpException
 import com.example.uas.model.Petugas
 import com.example.uas.repository.PetugasRepository
 import kotlinx.coroutines.launch
@@ -31,7 +32,7 @@ class HomeViewModelPetugas(private val ptg: PetugasRepository) : ViewModel(){
                 HomeUiStatePetugas.Success(ptg.getPetugas().data)
             } catch (e: IOException) {
                 HomeUiStatePetugas.Error
-            } catch (e: IOException) {
+            } catch (e: HttpException) {
                 HomeUiStatePetugas.Error
             }
         }
