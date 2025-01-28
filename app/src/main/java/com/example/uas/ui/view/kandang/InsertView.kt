@@ -33,11 +33,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uas.R
-import com.example.uas.model.Hewan
 import com.example.uas.ui.customwidget.CustomeTopAppBar
 import com.example.uas.ui.customwidget.DropdownNamaHewanToKandang
 import com.example.uas.ui.navigation.DestinasiNavigasi
 import com.example.uas.ui.viewmodel.PenyediaViewModel
+import com.example.uas.ui.viewmodel.hewan.HomeUiState
+import com.example.uas.ui.viewmodel.hewan.HomeViewModel
 import com.example.uas.ui.viewmodel.kandang.FormErrorStateKandang
 import com.example.uas.ui.viewmodel.kandang.InsertUiEventKandang
 import com.example.uas.ui.viewmodel.kandang.InsertUiStateKandang
@@ -58,13 +59,14 @@ object DestinasiInsertKandang: DestinasiNavigasi {
 fun InsertViewKandang(
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: InsertViewModelKandang = viewModel(factory= PenyediaViewModel.Factory)
+    viewModel: InsertViewModelKandang = viewModel(factory= PenyediaViewModel.Factory),
+    viewModelHewan: HomeViewModel = viewModel(factory= PenyediaViewModel.Factory)
 ){
     val uiStateKandang = viewModel.uiStateKandang
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-    val listHewan = viewModel.listHewan
+    val listHewan = viewModelHewan.hwnUiState
     val snackbarHostState = remember { SnackbarHostState() }
 
     val systemUiController = rememberSystemUiController()
@@ -130,7 +132,7 @@ fun EntryBodyKandang(
     insertUiStateKandang: InsertUiStateKandang,
     onKandangValueChange: (InsertUiEventKandang) -> Unit,
     onSaveClick: () -> Unit,
-    listHewan: List<Hewan>,
+    listHewan: HomeUiState,
     modifier: Modifier = Modifier
 ){
     Column (
@@ -164,12 +166,16 @@ fun FormInput(
     errorState: FormErrorStateKandang = FormErrorStateKandang(),
     onValueChange: (InsertUiEventKandang) -> Unit = {},
     enabled: Boolean = true,
-    listHewan: List<Hewan> = emptyList()
+    listHewan: HomeUiState
 ){
     Column (
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(5.dp)
     ){
+        val listNamaHewan = when (listHewan) {
+            is HomeUiState.Success -> listHewan.hewan
+            else -> emptyList()
+        }
 
         val expanded by remember { mutableStateOf(false) }
         val selectedNamaHewan by remember { mutableStateOf("") }
@@ -198,7 +204,7 @@ fun FormInput(
             expanded = remember { mutableStateOf(expanded) },
             selectedNamaHewan = remember { mutableStateOf(selectedNamaHewan) },
             onValueChange = { idHewan -> onValueChange(insertUiEventKandang.copy(idHewan = idHewan))},
-            listHewan = listHewan
+            listHewan = listNamaHewan
         )
         Text(
             text = errorState.idHewanError ?: "",

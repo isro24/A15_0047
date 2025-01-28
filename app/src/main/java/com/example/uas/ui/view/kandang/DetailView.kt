@@ -36,11 +36,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.uas.model.Hewan
 import com.example.uas.model.Kandang
 import com.example.uas.ui.customwidget.CustomeTopAppBar
 import com.example.uas.ui.navigation.DestinasiNavigasi
 import com.example.uas.ui.viewmodel.PenyediaViewModel
+import com.example.uas.ui.viewmodel.hewan.HomeUiState
+import com.example.uas.ui.viewmodel.hewan.HomeViewModel
 import com.example.uas.ui.viewmodel.kandang.DetailUiStateKandang
 import com.example.uas.ui.viewmodel.kandang.DetailViewModelKandang
 import com.example.uas.ui.viewmodel.kandang.toKnd
@@ -60,11 +61,12 @@ fun DetailViewKandang(
     NavigateBack: () -> Unit,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit = { },
-    viewModel: DetailViewModelKandang = viewModel(factory = PenyediaViewModel.Factory)
+    viewModel: DetailViewModelKandang = viewModel(factory = PenyediaViewModel.Factory),
+    viewModelHewan: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-    val listHewan = viewModel.listHewan
+    val listHewan = viewModelHewan.hwnUiState
 
     val systemUiController = rememberSystemUiController()
     LaunchedEffect(Unit) {
@@ -133,7 +135,7 @@ fun BodyDetailKnd(
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     detailUiStateKandang: DetailUiStateKandang,
-    listHewan: List<Hewan>,
+    listHewan: HomeUiState,
     onDeleteClick: () -> Unit
 ) {
     when {
@@ -194,10 +196,13 @@ fun BodyDetailKnd(
 fun ItemDetailKnd(
     modifier: Modifier = Modifier,
     kandang: Kandang,
-    listHewan: List<Hewan> = emptyList()
+    listHewan: HomeUiState
 ){
-
-    val namaHewan = listHewan.find { it.idHewan == kandang.idHewan }?.namaHewan ?: "Tidak Diketahui"
+    val listNamaHewan = when (listHewan) {
+        is HomeUiState.Success -> listHewan.hewan
+        else -> emptyList()
+    }
+    val namaHewan = listNamaHewan.find { it.idHewan == kandang.idHewan }?.namaHewan ?: "Tidak Diketahui"
 
     Card(
         modifier = modifier.fillMaxWidth().padding(top = 20.dp),

@@ -18,6 +18,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uas.ui.customwidget.CustomeTopAppBar
 import com.example.uas.ui.navigation.DestinasiNavigasi
 import com.example.uas.ui.viewmodel.PenyediaViewModel
+import com.example.uas.ui.viewmodel.hewan.HomeViewModel
 import com.example.uas.ui.viewmodel.kandang.UpdateViewModelKandang
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.Dispatchers
@@ -38,13 +39,14 @@ fun UpdateViewKandang(
     NavigateBack: () -> Unit,
     onNavigate:()-> Unit,
     modifier: Modifier = Modifier,
-    viewModel: UpdateViewModelKandang = viewModel(factory = PenyediaViewModel.Factory)
+    viewModel: UpdateViewModelKandang = viewModel(factory = PenyediaViewModel.Factory),
+    viewModelHewan: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ){
     val coroutineScope = rememberCoroutineScope()
     val uiStateKandang = viewModel.updateUIStateKandang
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val listHewan = viewModel.listHewan
+    val listHewan = viewModelHewan.hwnUiState
 
     val systemUiController = rememberSystemUiController()
     LaunchedEffect(Unit) {
