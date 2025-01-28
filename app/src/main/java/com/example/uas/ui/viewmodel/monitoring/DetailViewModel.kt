@@ -1,6 +1,5 @@
 package com.example.uas.ui.viewmodel.monitoring
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,10 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.uas.model.Hewan
-import com.example.uas.model.Kandang
 import com.example.uas.model.Monitoring
-import com.example.uas.model.Petugas
 import com.example.uas.repository.MonitoringRepository
 import com.example.uas.ui.view.monitoring.DestinasiDetailMonitoring
 import com.google.accompanist.systemuicontroller.SystemUiController
@@ -37,60 +33,6 @@ class DetailViewModelMonitoring(
 
     init {
         getMonitoringById()
-        fetchPetugas()
-        fetchKandang()
-        fetchHewan()
-    }
-
-    var listPetugas by mutableStateOf<List<Petugas>>(emptyList())
-        private set
-
-    private fun fetchPetugas(){
-        viewModelScope.launch {
-            try {
-                val response = monitoringRepository.getPetugas()
-                if (response.status){
-                    listPetugas = response.data
-                    Log.d("FetchPetugas", "Data Petugas: ${listPetugas}")
-                }
-            } catch (e: Exception){
-                e.printStackTrace()
-            }
-        }
-    }
-
-    var listKandang by mutableStateOf<List<Kandang>>(emptyList())
-        private set
-
-    private fun fetchKandang(){
-        viewModelScope.launch {
-            try {
-                val response = monitoringRepository.getKandang()
-                if (response.status){
-                    listKandang = response.data
-                    Log.d("FetchKandang", "Data Kandang: ${listKandang}")
-                }
-            } catch (e: Exception){
-                e.printStackTrace()
-            }
-        }
-    }
-
-    var listHewan by mutableStateOf<List<Hewan>>(emptyList())
-        private set
-
-    private fun fetchHewan(){
-        viewModelScope.launch {
-            try {
-                val response = monitoringRepository.getHewan()
-                if (response.status){
-                    listHewan = response.data
-                    Log.d("FetchHewan", "Data Hewan: ${listHewan}")
-                }
-            } catch (e: Exception){
-                e.printStackTrace()
-            }
-        }
     }
 
     fun getMonitoringById() {

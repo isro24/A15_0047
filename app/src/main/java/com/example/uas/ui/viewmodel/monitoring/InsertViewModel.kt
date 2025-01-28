@@ -1,19 +1,13 @@
 package com.example.uas.ui.viewmodel.monitoring
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.uas.model.Hewan
-import com.example.uas.model.Kandang
 import com.example.uas.model.Monitoring
-import com.example.uas.model.Petugas
 import com.example.uas.repository.MonitoringRepository
-import com.example.uas.ui.viewmodel.hewan.FormErrorState
-import com.example.uas.ui.viewmodel.hewan.InsertUiEvent
 import com.google.accompanist.systemuicontroller.SystemUiController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -31,65 +25,10 @@ class InsertViewModelMonitoring(private val mnt: MonitoringRepository): ViewMode
         onNavigateBack()
     }
 
-    init {
-        fetchPetugas()
-        fetchKandang()
-        fetchHewan()
-    }
-    var listPetugas by mutableStateOf<List<Petugas>>(emptyList())
-        private set
-
     private fun hapusErrorState(){
         viewModelScope.launch {
             delay(5000)
             uiStateMonitoring = uiStateMonitoring.copy(isEntryValidMonitoring = FormErrorStateMonitoring())
-        }
-    }
-    private fun fetchPetugas(){
-        viewModelScope.launch {
-            try {
-                val response = mnt.getPetugas()
-                if (response.status){
-                    listPetugas = response.data
-                    Log.d("FetchPetugas", "Data Petugas: ${listPetugas}")
-                }
-            } catch (e: Exception){
-                e.printStackTrace()
-            }
-        }
-    }
-
-    var listKandang by mutableStateOf<List<Kandang>>(emptyList())
-        private set
-
-    private fun fetchKandang(){
-        viewModelScope.launch {
-            try {
-                val response = mnt.getKandang()
-                if (response.status){
-                    listKandang = response.data
-                    Log.d("FetchKandang", "Data Kandang: ${listKandang}")
-                }
-            } catch (e: Exception){
-                e.printStackTrace()
-            }
-        }
-    }
-
-    var listHewan by mutableStateOf<List<Hewan>>(emptyList())
-        private set
-
-    private fun fetchHewan(){
-        viewModelScope.launch {
-            try {
-                val response = mnt.getHewan()
-                if (response.status){
-                    listHewan = response.data
-                    Log.d("FetchHewan", "Data Hewan: ${listHewan}")
-                }
-            } catch (e: Exception){
-                e.printStackTrace()
-            }
         }
     }
 
