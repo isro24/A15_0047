@@ -42,18 +42,21 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uas.R
-import com.example.uas.model.Hewan
-import com.example.uas.model.Kandang
-import com.example.uas.model.Petugas
 import com.example.uas.ui.customwidget.CustomeTopAppBar
 import com.example.uas.ui.customwidget.DropDownKandangToMonitoring
 import com.example.uas.ui.customwidget.DropDownNamaPetugasToMonitoring
 import com.example.uas.ui.navigation.DestinasiNavigasi
 import com.example.uas.ui.viewmodel.PenyediaViewModel
+import com.example.uas.ui.viewmodel.hewan.HomeUiState
+import com.example.uas.ui.viewmodel.hewan.HomeViewModel
+import com.example.uas.ui.viewmodel.kandang.HomeUiStateKandang
+import com.example.uas.ui.viewmodel.kandang.HomeViewModelKandang
 import com.example.uas.ui.viewmodel.monitoring.FormErrorStateMonitoring
 import com.example.uas.ui.viewmodel.monitoring.InsertUiEventMonitoring
 import com.example.uas.ui.viewmodel.monitoring.InsertUiStateMonitoring
 import com.example.uas.ui.viewmodel.monitoring.InsertViewModelMonitoring
+import com.example.uas.ui.viewmodel.petugas.HomeUiStatePetugas
+import com.example.uas.ui.viewmodel.petugas.HomeViewModelPetugas
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -73,7 +76,10 @@ object DestinasiInsertMonitoring: DestinasiNavigasi {
 fun InsertViewMonitoring(
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: InsertViewModelMonitoring = viewModel(factory= PenyediaViewModel.Factory)
+    viewModel: InsertViewModelMonitoring = viewModel(factory= PenyediaViewModel.Factory),
+    viewModelPetugas: HomeViewModelPetugas = viewModel(factory= PenyediaViewModel.Factory),
+    viewModelKandang: HomeViewModelKandang = viewModel(factory= PenyediaViewModel.Factory),
+    viewModelHewan: HomeViewModel = viewModel(factory= PenyediaViewModel.Factory),
 ){
     val uiStateMonitoring = viewModel.uiStateMonitoring
     val coroutineScope = rememberCoroutineScope()
@@ -94,9 +100,9 @@ fun InsertViewMonitoring(
         }
     }
 
-    val listPetugas = viewModel.listPetugas
-    val listKandang = viewModel.listKandang
-    val listHewan = viewModel.listHewan
+    val listPetugas = viewModelPetugas.ptgUiState
+    val listKandang = viewModelKandang.kndUiState
+    val listHewan = viewModelHewan.hwnUiState
 
     Scaffold (
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -149,9 +155,9 @@ fun EntryBodyMonitoring(
     insertUiStateMonitoring: InsertUiStateMonitoring,
     onMonitoringValueChange: (InsertUiEventMonitoring) -> Unit,
     onSaveClick: () -> Unit,
-    listPetugas: List<Petugas>,
-    listKandang: List<Kandang>,
-    listHewan: List<Hewan>,
+    listPetugas: HomeUiStatePetugas,
+    listKandang: HomeUiStateKandang,
+    listHewan: HomeUiState,
     modifier: Modifier = Modifier
 ){
     val scrollState = rememberScrollState()
@@ -190,9 +196,9 @@ fun FormInput(
     onValueChange: (InsertUiEventMonitoring) -> Unit = {},
     enabled: Boolean = true,
     errorStateMonitoring: FormErrorStateMonitoring = FormErrorStateMonitoring(),
-    listPetugas: List<Petugas> = emptyList(),
-    listKandang: List<Kandang> = emptyList(),
-    listHewan: List<Hewan> = emptyList(),
+    listPetugas: HomeUiStatePetugas,
+    listKandang: HomeUiStateKandang,
+    listHewan: HomeUiState,
 ) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
@@ -207,6 +213,18 @@ fun FormInput(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(5.dp)
     ) {
+        val listNamaPetugas = when (listPetugas) {
+            is HomeUiStatePetugas.Success -> listPetugas.petugas
+            else -> emptyList()
+        }
+        val listIdKandang = when (listKandang) {
+            is HomeUiStateKandang.Success -> listKandang.kandang
+            else -> emptyList()
+        }
+        val listNamaHewan = when (listHewan) {
+            is HomeUiState.Success -> listHewan.hewan
+            else -> emptyList()
+        }
 
         val expanded by remember { mutableStateOf(false) }
         val selectedNamaPetugas by remember { mutableStateOf("") }
@@ -217,7 +235,7 @@ fun FormInput(
             expanded = remember { mutableStateOf(expanded) },
             selectedNamaPetugas = remember { mutableStateOf(selectedNamaPetugas) },
             onValueChange = { idPetugas -> onValueChange(insertUiEventMonitoring.copy(idPetugas = idPetugas))},
-            listPetugas = listPetugas.filter { it.jabatan == "Dokter Hewan" }
+            listPetugas = listNamaPetugas.filter { it.jabatan == "Dokter Hewan" }
         )
         Text(
             text = errorStateMonitoring.idPetugasError ?: "",
@@ -229,8 +247,8 @@ fun FormInput(
             selectedKandang = remember { mutableStateOf(selectedKandang) },
             selectedHewan = remember { mutableStateOf(selectedHewan) },
             onValueChange = { idKandang -> onValueChange(insertUiEventMonitoring.copy(idKandang = idKandang)) },
-            listKandang = listKandang,
-            listHewan = listHewan
+            listKandang = listIdKandang,
+            listHewan = listNamaHewan
         )
         Text(
             text = errorStateMonitoring.idKandangError ?: "",

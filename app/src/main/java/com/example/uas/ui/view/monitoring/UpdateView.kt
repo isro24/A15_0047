@@ -15,13 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.uas.model.Hewan
-import com.example.uas.model.Kandang
-import com.example.uas.model.Petugas
 import com.example.uas.ui.customwidget.CustomeTopAppBar
 import com.example.uas.ui.navigation.DestinasiNavigasi
 import com.example.uas.ui.viewmodel.PenyediaViewModel
+import com.example.uas.ui.viewmodel.hewan.HomeViewModel
+import com.example.uas.ui.viewmodel.kandang.HomeViewModelKandang
 import com.example.uas.ui.viewmodel.monitoring.UpdateViewModelMonitoring
+import com.example.uas.ui.viewmodel.petugas.HomeViewModelPetugas
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -42,14 +42,17 @@ fun UpdateViewMonitoring(
     onNavigate:()-> Unit,
     modifier: Modifier = Modifier,
     viewModel: UpdateViewModelMonitoring = viewModel(factory = PenyediaViewModel.Factory),
+    viewModelPetugas: HomeViewModelPetugas = viewModel(factory= PenyediaViewModel.Factory),
+    viewModelKandang: HomeViewModelKandang = viewModel(factory= PenyediaViewModel.Factory),
+    viewModelHewan: HomeViewModel = viewModel(factory= PenyediaViewModel.Factory),
 ){
     val coroutineScope = rememberCoroutineScope()
     val uiStateMonitoring = viewModel.updateUIStateMonitoring
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val listHewan = viewModel.listHewan
-    val listPetugas = viewModel.listPetugas
-    val listKandang = viewModel.listKandang
+    val listPetugas = viewModelPetugas.ptgUiState
+    val listKandang = viewModelKandang.kndUiState
+    val listHewan = viewModelHewan.hwnUiState
 
 
     val systemUiController = rememberSystemUiController()

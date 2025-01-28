@@ -36,16 +36,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.uas.model.Hewan
-import com.example.uas.model.Kandang
 import com.example.uas.model.Monitoring
-import com.example.uas.model.Petugas
 import com.example.uas.ui.customwidget.CustomeTopAppBar
 import com.example.uas.ui.navigation.DestinasiNavigasi
 import com.example.uas.ui.viewmodel.PenyediaViewModel
+import com.example.uas.ui.viewmodel.hewan.HomeUiState
+import com.example.uas.ui.viewmodel.hewan.HomeViewModel
+import com.example.uas.ui.viewmodel.kandang.HomeUiStateKandang
+import com.example.uas.ui.viewmodel.kandang.HomeViewModelKandang
 import com.example.uas.ui.viewmodel.monitoring.DetailUiStateMonitoring
 import com.example.uas.ui.viewmodel.monitoring.DetailViewModelMonitoring
 import com.example.uas.ui.viewmodel.monitoring.toMnt
+import com.example.uas.ui.viewmodel.petugas.HomeUiStatePetugas
+import com.example.uas.ui.viewmodel.petugas.HomeViewModelPetugas
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 object DestinasiDetailMonitoring : DestinasiNavigasi {
@@ -62,13 +65,16 @@ fun DetailViewMonitoring(
     NavigateBack: () -> Unit,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit = { },
-    viewModel: DetailViewModelMonitoring = viewModel(factory = PenyediaViewModel.Factory)
+    viewModel: DetailViewModelMonitoring = viewModel(factory = PenyediaViewModel.Factory),
+    viewModelPetugas: HomeViewModelPetugas = viewModel(factory= PenyediaViewModel.Factory),
+    viewModelKandang: HomeViewModelKandang = viewModel(factory= PenyediaViewModel.Factory),
+    viewModelHewan: HomeViewModel = viewModel(factory= PenyediaViewModel.Factory),
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-    val listPetugas = viewModel.listPetugas
-    val listKandang = viewModel.listKandang
-    val listHewan = viewModel.listHewan
+    val listPetugas = viewModelPetugas.ptgUiState
+    val listKandang = viewModelKandang.kndUiState
+    val listHewan = viewModelHewan.hwnUiState
 
     val systemUiController = rememberSystemUiController()
     LaunchedEffect(Unit) {
@@ -138,9 +144,9 @@ fun BodyDetailMnt(
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
     detailUiStateMonitoring: DetailUiStateMonitoring,
-    listPetugas: List<Petugas>,
-    listKandang: List<Kandang>,
-    listHewan: List<Hewan>,
+    listPetugas: HomeUiStatePetugas,
+    listKandang: HomeUiStateKandang,
+    listHewan: HomeUiState,
     onDeleteClick: () -> Unit
 ) {
     when {
@@ -202,19 +208,28 @@ fun BodyDetailMnt(
 fun ItemDetailMnt(
     modifier: Modifier = Modifier,
     monitoring: Monitoring,
-    listPetugas: List<Petugas> = emptyList(),
-    listKandang: List<Kandang> = emptyList(),
-    listHewan: List<Hewan> = emptyList(),
+    listPetugas: HomeUiStatePetugas,
+    listKandang: HomeUiStateKandang,
+    listHewan: HomeUiState,
 ){
-    val namaPetugas = listPetugas.find { it.idPetugas == monitoring.idPetugas }?.namaPetugas ?: "Tidak Diketahui"
+    val listNamaPetugas = when (listPetugas) {
+        is HomeUiStatePetugas.Success -> listPetugas.petugas
+        else -> emptyList()
+    }
+    val listIdKandang = when (listKandang) {
+        is HomeUiStateKandang.Success -> listKandang.kandang
+        else -> emptyList()
+    }
+    val listNamaHewan = when (listHewan) {
+        is HomeUiState.Success -> listHewan.hewan
+        else -> emptyList()
+    }
+    val namaPetugas = listNamaPetugas.find { it.idPetugas == monitoring.idPetugas }?.namaPetugas ?: "Tidak Diketahui"
+    val idKandang = listIdKandang.find { it.idKandang == monitoring.idKandang }
+    val namaHewan = listNamaHewan.find { it.idHewan == idKandang?.idHewan }?.namaHewan ?: "Tidak Diketahui"
 
-    val kandangTerkait = listKandang.find { it.idKandang == monitoring.idKandang }
-    val hewanNama = kandangTerkait?.let { kandang ->
-        listHewan.find { it.idHewan == kandang.idHewan }?.namaHewan ?: "Tidak Diketahui"
-    } ?: "Data tidak tersedia"
-
-    val dataKandang = kandangTerkait?.let { kandang ->
-        "${kandang.idKandang} - $hewanNama"
+    val dataKandang = idKandang?.let { kandang ->
+        "${kandang.idKandang} - $namaHewan"
     } ?: "Data tidak tersedia"
 
     Card(
