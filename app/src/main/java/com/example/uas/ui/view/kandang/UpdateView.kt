@@ -79,6 +79,7 @@ fun UpdateViewKandang(
     ){ padding ->
         EntryBodyKandang(
             uiStateKandang = uiStateKandang,
+            modeUpdate = true,
             modifier = Modifier.padding(padding)
                 .padding(horizontal = 30.dp, vertical = 10.dp)
                 .fillMaxWidth(),

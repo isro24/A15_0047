@@ -134,7 +134,8 @@ fun EntryBodyKandang(
     onKandangValueChange: (InsertUiEventKandang) -> Unit,
     onSaveClick: () -> Unit,
     listHewan: HomeUiState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    modeUpdate: Boolean = false
 ){
     Column (
         verticalArrangement = Arrangement.spacedBy(18.dp),
@@ -145,7 +146,8 @@ fun EntryBodyKandang(
             onValueChange = onKandangValueChange,
             modifier = Modifier.fillMaxWidth(),
             listHewan = listHewan,
-            errorState = uiStateKandang.isEntryValidKandang
+            errorState = uiStateKandang.isEntryValidKandang,
+            modeUpdate = !modeUpdate
         )
         Button(
             onClick = onSaveClick,
@@ -167,7 +169,8 @@ fun FormInput(
     errorState: FormErrorStateKandang = FormErrorStateKandang(),
     onValueChange: (InsertUiEventKandang) -> Unit = {},
     enabled: Boolean = true,
-    listHewan: HomeUiState
+    listHewan: HomeUiState,
+    modeUpdate: Boolean = false
 ){
     Column (
         modifier = modifier,
@@ -181,22 +184,24 @@ fun FormInput(
         val expanded by remember { mutableStateOf(false) }
         val selectedNamaHewan by remember { mutableStateOf("") }
 
-        OutlinedTextField(
-            value = insertUiEventKandang.idKandang,
-            onValueChange = {onValueChange(insertUiEventKandang.copy(idKandang = it))},
-            label = { Text(text = "Id Kandang") },
-            modifier = Modifier.fillMaxWidth(),
-            isError = errorState.idKandangError!=null,
-            enabled = enabled,
-            singleLine = true,
-            leadingIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.cageicon),
-                    contentDescription = "Id Kandang",
-                    modifier = Modifier.size(30.dp)
-                )
-            }
-        )
+        if(modeUpdate){
+            OutlinedTextField(
+                value = insertUiEventKandang.idKandang,
+                onValueChange = {onValueChange(insertUiEventKandang.copy(idKandang = it))},
+                label = { Text(text = "Id Kandang") },
+                modifier = Modifier.fillMaxWidth(),
+                isError = errorState.idKandangError!=null,
+                enabled = enabled,
+                singleLine = true,
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.cageicon),
+                        contentDescription = "Id Kandang",
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
+            )
+        }
         Text(
             text = errorState.idKandangError ?: "",
             color = Color.Red
