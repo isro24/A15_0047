@@ -1,6 +1,5 @@
 package com.example.uas.repository
 
-import com.example.uas.model.AllHewanResponse
 import com.example.uas.model.AllKandangResponse
 import com.example.uas.model.Kandang
 import com.example.uas.model.KandangDetailResponse

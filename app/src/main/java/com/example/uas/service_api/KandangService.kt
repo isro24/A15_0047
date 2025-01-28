@@ -1,6 +1,5 @@
 package com.example.uas.service_api
 
-import com.example.uas.model.AllHewanResponse
 import com.example.uas.model.AllKandangResponse
 import com.example.uas.model.Kandang
 import com.example.uas.model.KandangDetailResponse

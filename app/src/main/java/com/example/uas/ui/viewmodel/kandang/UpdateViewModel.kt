@@ -7,7 +7,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.uas.model.Hewan
 import com.example.uas.repository.KandangRepository
 import com.example.uas.ui.view.kandang.DestinasiUpdateKandang
 import com.google.accompanist.systemuicontroller.SystemUiController

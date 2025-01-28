@@ -50,8 +50,6 @@ import com.example.uas.ui.customwidget.DropDownKandangToMonitoring
 import com.example.uas.ui.customwidget.DropDownNamaPetugasToMonitoring
 import com.example.uas.ui.navigation.DestinasiNavigasi
 import com.example.uas.ui.viewmodel.PenyediaViewModel
-import com.example.uas.ui.viewmodel.hewan.FormErrorState
-import com.example.uas.ui.viewmodel.hewan.InsertUiState
 import com.example.uas.ui.viewmodel.monitoring.FormErrorStateMonitoring
 import com.example.uas.ui.viewmodel.monitoring.InsertUiEventMonitoring
 import com.example.uas.ui.viewmodel.monitoring.InsertUiStateMonitoring
