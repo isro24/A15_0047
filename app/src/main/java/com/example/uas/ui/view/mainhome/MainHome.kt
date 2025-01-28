@@ -2,10 +2,14 @@ package com.example.uas.ui.view.mainhome
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButtonDefaults.elevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -14,10 +18,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -40,12 +47,12 @@ fun MainHome(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xFF28D15A))
+            .background(color = Color(0xFF189E9B))
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.5f)
+                .weight(0.4f)
         ) {
             Header()
         }
@@ -67,18 +74,37 @@ fun Header() {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF21AB49),
+                        Color(0xFF189E9B)
+                    )
+                )
+            )
     ) {
         Image(
             painter = painterResource(id = R.drawable.lion),
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-                .alpha(0.3f)
+            modifier = Modifier
+                .fillMaxSize()
+                .alpha(0.7f)
+                .padding(top = 25.dp, end = 66.dp)
+        )
+        Image(
+            painter = painterResource(id = R.drawable.iconprofil),
+            contentDescription = null,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .size(110.dp)
+                .align(Alignment.TopEnd)
+                .padding(top = 35.dp, end = 36.dp)
         )
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 32.dp),
+                .padding(top = 120.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -96,8 +122,9 @@ fun Header() {
                 text = "Pilih kategori yang ingin Anda kelola!",
                 style = MaterialTheme.typography.bodyMedium.copy(
                     color = Color.White,
-                    fontSize = 16.sp
-                )
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                    )
             )
         }
     }
@@ -124,21 +151,22 @@ fun Body(navController: NavHostController) {
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp
                 ),
-                modifier = Modifier.offset(y = (-100).dp)
+                modifier = Modifier.offset(y = (-70).dp)
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.Center,
             ) {
-                MenuButton(
-                    text = "Petugas",
-                    iconRes = R.drawable.officericon,
-                    onClick = { navController.navigate(DestinasiHomePetugas.route) }
-                )
 
                 MenuButton(
+                    text = "Kandang",
+                    iconRes = R.drawable.cageicon,
+                    onClick = { navController.navigate(DestinasiHomeKandang.route) }
+                )
+                Spacer(modifier = Modifier.width(46.dp))
+                MenuButton(
                     text = "Hewan",
-                    iconRes = R.drawable.lionicon,
+                    iconRes = R.drawable.lionhome,
                     onClick = { navController.navigate(DestinasiHomeHewan.route) }
                 )
             }
@@ -147,17 +175,17 @@ fun Body(navController: NavHostController) {
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.Center,
             ) {
                 MenuButton(
-                    text = "Kandang",
-                    iconRes = R.drawable.cageicon,
-                    onClick = { navController.navigate(DestinasiHomeKandang.route) }
+                    text = "Petugas",
+                    iconRes = R.drawable.officerhome,
+                    onClick = { navController.navigate(DestinasiHomePetugas.route) }
                 )
-
+                Spacer(modifier = Modifier.width(46.dp))
                 MenuButton(
                     text = "Monitoring",
-                    iconRes = R.drawable.monitoringicon,
+                    iconRes = R.drawable.monitoringhome,
                     onClick = { navController.navigate(DestinasiHomeMonitoring.route) }
                 )
             }
@@ -171,33 +199,42 @@ fun MenuButton(
     iconRes: Int,
     onClick: () -> Unit
 ) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .width(160.dp)
-            .height(60.dp)
-            .offset(y = (-50).dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(8.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+        Card(
+            modifier = Modifier
+                .width(80.dp)
+                .height(80.dp)
+                .clip(RoundedCornerShape(60.dp))
+                .clickable { onClick() },
+            shape = RoundedCornerShape(60.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(0xFF29FF73)
+            ),
         ) {
-            Icon(
-                painter = painterResource(id = iconRes),
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = text,
-                color = Color.White,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Bold
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Image(
+                    painter = painterResource(id = iconRes),
+                    contentDescription = null,
+                    modifier = Modifier.size(40.dp),
+                    contentScale = ContentScale.Fit
                 )
-            )
+            }
         }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = text,
+            color = Color.Black,
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontWeight = FontWeight.Bold
+            ),
+            textAlign = TextAlign.Center
+        )
     }
 }
+

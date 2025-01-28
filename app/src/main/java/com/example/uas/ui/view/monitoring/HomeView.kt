@@ -42,6 +42,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uas.R
@@ -133,7 +134,7 @@ fun HeaderSection() {
                 brush = Brush.verticalGradient(
                     colors = listOf(
                         Color(0xFF21AB49),
-                        Color(0xFF13C8D1)
+                        Color(0xFF189E9B)
                     )
                 )
             )
@@ -144,7 +145,7 @@ fun HeaderSection() {
             contentDescription = "Header Background",
             modifier = Modifier
                 .fillMaxSize()
-                .alpha(0.1f),
+                .alpha(0.2f),
             contentScale = ContentScale.Crop
         )
 
@@ -157,18 +158,21 @@ fun HeaderSection() {
             Text(
                 text = "Informasi dan Manajemen ",
                 style = MaterialTheme.typography.headlineLarge,
-                color = Color.White
+                color = Color.White,
+                fontWeight = FontWeight.Medium
             )
             Text(
                 text = "Monitoring",
                 style = MaterialTheme.typography.headlineMedium,
-                color = Color.White
+                color = Color.White,
+                fontWeight = FontWeight.Medium
             )
             Spacer(modifier = Modifier.padding(10.dp))
             Text(
                 text = "Mari kelola data Monitoring",
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color.White
+                color = Color.White,
+                fontWeight = FontWeight.Medium
             )
         }
     }
@@ -282,17 +286,18 @@ fun MntCard(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ){
                 Text(
-                    text = monitoring.idKandang,
+                    text = simpleDateTimeFormat,
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = simpleDateTimeFormat,
-                    style = MaterialTheme.typography.titleSmall
+                    text = monitoring.idKandang,
+                    style = MaterialTheme.typography.titleMedium
                 )
             }
             IconButton(
                 onClick = { onDetailClick(monitoring) },
-                modifier = Modifier.size(35.dp)
+                modifier = Modifier.size(70.dp)
+                    .padding(end = 10.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Info,

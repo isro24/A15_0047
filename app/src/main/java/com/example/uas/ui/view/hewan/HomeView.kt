@@ -51,6 +51,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uas.R
 import com.example.uas.model.Hewan
@@ -155,7 +156,7 @@ fun HeaderSection() {
                 brush = Brush.verticalGradient(
                     colors = listOf(
                         Color(0xFF21AB49),
-                        Color(0xFF13C8D1)
+                        Color(0xFF189E9B)
                     )
                 )
             )
@@ -179,19 +180,22 @@ fun HeaderSection() {
             Text(
                 text = "Informasi dan Manajemen",
                 style = MaterialTheme.typography.headlineLarge,
-                color = Color.White
+                color = Color.White,
+                fontWeight = FontWeight.Medium
             )
             Text(
                 text = "Hewan",
                 style = MaterialTheme.typography.headlineMedium,
-                color = Color.White
+                color = Color.White,
+                fontWeight = FontWeight.Medium
             )
 
             Spacer(modifier = Modifier.padding(5.dp))
             Text(
                 text = "Mari kelola data Hewan",
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color.White
+                color = Color.White,
+                fontWeight = FontWeight.Medium
             )
         }
     }
@@ -358,7 +362,7 @@ fun HwnCard(
                 )
                 Text(
                     text = hewan.tipePakan,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     color = textColor
                 )
             }
