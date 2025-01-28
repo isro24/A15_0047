@@ -1,9 +1,6 @@
 package com.example.uas.service_api
 
-import com.example.uas.model.AllHewanResponse
-import com.example.uas.model.AllKandangResponse
 import com.example.uas.model.AllMonitoringResponse
-import com.example.uas.model.AllPetugasResponse
 import com.example.uas.model.Monitoring
 import com.example.uas.model.MonitoringDetailResponse
 import retrofit2.Response
@@ -26,15 +23,6 @@ interface MonitoringService {
 
     @GET(".")
     suspend fun getAllMonitoring(): AllMonitoringResponse
-
-    @GET("petugas")
-    suspend fun getAllPetugas(): AllPetugasResponse
-
-    @GET("kandang")
-    suspend fun getAllKandang(): AllKandangResponse
-
-    @GET("hewan")
-    suspend fun getAllHewan(): AllHewanResponse
 
     @GET("{id_monitoring}")
     suspend fun getMonitoringById(@Path("id_monitoring") idMonitoring:String): MonitoringDetailResponse
